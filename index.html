@@ -24,7 +24,7 @@
   <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white p-6 rounded-2xl shadow-xl max-w-sm w-full text-center transform transition-all">
       <h3 id="modal-title" class="text-xl font-bold mb-4 text-green-600">알림</h3>
-      <p id="modal-message" class="text-lg mb-6 break-words"></p>
+      <p id="modal-message" class="text-lg mb-6 break-words whitespace-pre-wrap text-left"></p>
       <button id="modal-btn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-xl font-bold text-lg w-full transition-colors">확인</button>
     </div>
   </div>
@@ -469,18 +469,17 @@
     function showModal(msg, title = "알림", callback = null) {
       els.modal.title.innerText = title;
       els.modal.msg.innerText = msg;
-      els.modal.container.classList.add('active'); // modal은 별도 css로 제어되므로 문제없음
+      els.modal.container.classList.add('active'); 
       els.modal.btn.onclick = () => {
         els.modal.container.classList.remove('active');
         if (callback) callback();
       };
     }
 
-    // ⭐ 화면 전환 함수 버그 수정 (hidden과 flex 동시 제어)
     function switchScreen(screenName) {
       Object.values(els.screens).forEach(el => {
         el.classList.add('hidden');
-        el.classList.remove('flex'); // 이 부분이 빠져있어 flex가 hidden을 덮어쓰고 있었습니다.
+        el.classList.remove('flex'); 
       });
       els.screens[screenName].classList.remove('hidden');
       els.screens[screenName].classList.add('flex');
@@ -631,7 +630,7 @@
     });
 
     els.teacher.btnAuthSubmit.addEventListener('click', async () => {
-      if (!currentUser) return showModal("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.");
+      if (!currentUser) return showModal("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.\n(Firebase 익명 로그인이 활성화되었는지 확인하세요)");
 
       const typedPw = els.teacher.pwInput.value;
       if (!typedPw) return showModal("비밀번호를 입력하세요.");
@@ -654,8 +653,8 @@
            showModal("비밀번호가 일치하지 않습니다.");
         }
       } catch (err) {
-        console.error(err);
-        showModal("인증 처리 중 오류가 발생했습니다.");
+        console.error("교사 인증 오류:", err);
+        showModal(`접근이 거부되었습니다.\n\n[오류 원인]\n${err.message}\n\nFirebase Firestore '보안 규칙(Rules)'이 읽기/쓰기를 허용하는지 확인해 주세요.`);
       }
     });
 
@@ -670,7 +669,6 @@
     els.teacher.btnSaveVocab.addEventListener('click', async () => {
       if (!currentUser) return;
       const text = els.teacher.vocabTextarea.value;
-      // split by comma or newline
       const list = text.split(/[\n,]+/).map(w => w.trim()).filter(w => w.length > 0);
       
       if(list.length < 5) return showModal("원활한 게임 진행을 위해 단어를 5개 이상 등록해주세요.");
@@ -680,7 +678,8 @@
         await setDoc(ref, { vocabulary: list }, {merge: true});
         showModal("단어장이 성공적으로 저장되었습니다!");
       } catch(err) {
-        showModal("저장에 실패했습니다.");
+        console.error(err);
+        showModal(`단어장 저장 실패\n\n[오류 원인]\n${err.message}`);
       }
     });
 
@@ -691,7 +690,8 @@
         await setDoc(ref, { list: [] });
         showModal("명예의 전당이 완전히 초기화되었습니다.");
       } catch(err) {
-        showModal("초기화에 실패했습니다.");
+        console.error(err);
+        showModal(`초기화 실패\n\n[오류 원인]\n${err.message}`);
       }
     });
 
@@ -706,14 +706,15 @@
         showModal("비밀번호가 변경되었습니다. 다음 접속부터 새로운 비밀번호를 사용하세요.");
         els.teacher.newPwInput.value = '';
       } catch(err) {
-        showModal("변경에 실패했습니다.");
+        console.error(err);
+        showModal(`비밀번호 변경 실패\n\n[오류 원인]\n${err.message}`);
       }
     });
 
 
     // --- Room Logic ---
     els.login.btnCreate.addEventListener('click', async () => {
-      if (!currentUser) return showModal("인증 중입니다. 잠시 후 다시 시도해주세요.");
+      if (!currentUser) return showModal("서버 연결 대기중입니다.");
       if (!validateLogin()) return;
 
       const code = generateRoomCode();
@@ -752,14 +753,14 @@
         isHost = true;
         currentRoomCode = code;
         joinGameFlow();
-      } catch (e) {
-        console.error(e);
-        showModal("방 생성에 실패했습니다.");
+      } catch (err) {
+        console.error(err);
+        showModal(`방 생성 실패\n\n[오류 원인]\n${err.message}\n\nFirebase 보안 규칙(Rules)을 확인하세요.`);
       }
     });
 
     els.login.btnJoin.addEventListener('click', async () => {
-      if (!currentUser) return showModal("인증 중입니다. 잠시 후 다시 시도해주세요.");
+      if (!currentUser) return showModal("서버 연결 대기중입니다.");
       if (!validateLogin()) return;
       
       const code = els.login.roomCode.value.trim().toUpperCase();
@@ -795,9 +796,9 @@
         currentRoomCode = code;
         joinGameFlow();
 
-      } catch (e) {
-        console.error(e);
-        showModal("방 입장 중 오류가 발생했습니다.");
+      } catch (err) {
+        console.error(err);
+        showModal(`방 입장 실패\n\n[오류 원인]\n${err.message}`);
       }
     });
 
@@ -1123,20 +1124,20 @@
           const guesserScore = Math.floor((timeLeft / maxTime) * 100) + 10;
           const drawerScore = 20 + Math.floor((timeLeft / maxTime) * 20);
 
-          const playersUpdate = { ...room.players };
-          playersUpdate[myUid].score += guesserScore;
-          playersUpdate[myUid].hasGuessed = true;
-          
-          if(playersUpdate[room.currentDrawer]) {
-             playersUpdate[room.currentDrawer].score += drawerScore;
-          }
-
           const sysMsg = { type: 'system', text: `🎉 ${myPlayerObj.name}님이 정답을 맞혔습니다! (+${guesserScore}점)` };
 
-          await updateDoc(roomRef, {
-            players: playersUpdate,
+          // 점수 갱신 시에도 다른 학생들과 충돌하지 않도록 increment 함수를 이용해 점진적 업데이트를 수행합니다.
+          const updates = {
+            [`players.${myUid}.score`]: increment(guesserScore),
+            [`players.${myUid}.hasGuessed`]: true,
             messages: arrayUnion(sysMsg)
-          });
+          };
+
+          if (room.currentDrawer && room.currentDrawer !== myUid) {
+             updates[`players.${room.currentDrawer}.score`] = increment(drawerScore);
+          }
+
+          await updateDoc(roomRef, updates);
         } else {
           const msg = { type: 'chat', senderUid: myUid, senderName: myPlayerObj.name, text: text, timestamp: Date.now() };
           await updateDoc(roomRef, { messages: arrayUnion(msg) });
