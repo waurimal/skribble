@@ -291,7 +291,8 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, collection, getDocs, limit, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    // increment 함수 import 추가
+    import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, increment, collection, getDocs, limit, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // --- Firebase Initialization ---
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'catch-mind-game';
@@ -788,10 +789,11 @@
           joinedAt: Date.now()
         };
 
-        const currentPlayers = roomData.players || {};
-        currentPlayers[myUid] = newPlayer;
-
-        await updateDoc(roomRef, { players: currentPlayers });
+        // 데이터를 덮어쓰지 않고, 새로운 플레이어만 추가하도록 원자적(Atomic) 업데이트 적용
+        await updateDoc(roomRef, {
+          [`players.${myUid}`]: newPlayer
+        });
+        
         isHost = false;
         currentRoomCode = code;
         joinGameFlow();
