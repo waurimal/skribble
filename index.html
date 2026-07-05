@@ -13,12 +13,12 @@
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     
     /* Custom Modal CSS */
-    #custom-modal.active { display: flex; }
+    #custom-modal.active { display: flex !important; }
     
     .avatar-svg { width: 100%; height: 100%; }
   </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col text-gray-800">
+<body class="h-screen w-screen overflow-hidden flex flex-col text-gray-800 relative">
 
   <!-- Custom Alert Modal -->
   <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
@@ -30,7 +30,7 @@
   </div>
 
   <!-- Screen 1: Login / Avatar Setup -->
-  <div id="screen-login" class="flex-1 flex flex-col items-center p-4 overflow-y-auto">
+  <div id="screen-login" class="flex flex-col items-center p-4 overflow-y-auto h-full w-full">
     <!-- Top Bar -->
     <div class="w-full max-w-lg flex justify-end mb-2">
       <button id="btn-go-teacher-auth" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm transition-colors shadow flex items-center gap-1">
@@ -48,16 +48,16 @@
       </div>
       
       <div class="flex gap-2 mb-6 w-full justify-center">
-        <button id="btn-rand-avatar" class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg text-sm transition-colors">랜덤 캐릭터</button>
+        <button id="btn-rand-avatar" class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg text-sm transition-colors shadow-sm">랜덤 캐릭터</button>
         <div class="flex items-center gap-1">
-          <label class="text-sm">색상:</label>
-          <input type="color" id="avatar-color" class="w-8 h-8 rounded cursor-pointer" value="#4ADE80">
+          <label class="text-sm font-bold text-gray-600">색상:</label>
+          <input type="color" id="avatar-color" class="w-8 h-8 rounded cursor-pointer border-0 p-0" value="#4ADE80">
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-3 w-full mb-4">
         <!-- 학년 풀다운 -->
-        <select id="input-grade" class="border-2 border-gray-200 p-3 rounded-xl focus:outline-none focus:border-green-400 text-center text-gray-700 appearance-none bg-white">
+        <select id="input-grade" class="border-2 border-gray-200 p-3 rounded-xl focus:outline-none focus:border-green-400 text-center text-gray-700 bg-white shadow-inner">
           <option value="" disabled selected>학년 선택</option>
           <option value="1">1학년</option>
           <option value="2">2학년</option>
@@ -67,7 +67,7 @@
           <option value="6">6학년</option>
         </select>
         <!-- 반 풀다운 -->
-        <select id="input-class" class="border-2 border-gray-200 p-3 rounded-xl focus:outline-none focus:border-green-400 text-center text-gray-700 appearance-none bg-white">
+        <select id="input-class" class="border-2 border-gray-200 p-3 rounded-xl focus:outline-none focus:border-green-400 text-center text-gray-700 bg-white shadow-inner">
           <option value="" disabled selected>반 선택</option>
           <option value="1">1반</option>
           <option value="2">2반</option>
@@ -84,94 +84,94 @@
         </select>
       </div>
       <div class="grid grid-cols-2 gap-3 w-full mb-6">
-        <input type="number" id="input-number" placeholder="번호 입력 (예: 1)" class="border-2 border-gray-200 p-3 rounded-xl focus:outline-none focus:border-green-400 text-center" min="1" max="50">
-        <input type="text" id="input-name" placeholder="이름 (예: 홍길동)" class="border-2 border-gray-200 p-3 rounded-xl focus:outline-none focus:border-green-400 text-center" maxlength="10">
+        <input type="number" id="input-number" placeholder="번호 입력 (예: 1)" class="border-2 border-gray-200 p-3 rounded-xl focus:outline-none focus:border-green-400 text-center shadow-inner" min="1" max="50">
+        <input type="text" id="input-name" placeholder="이름 (예: 홍길동)" class="border-2 border-gray-200 p-3 rounded-xl focus:outline-none focus:border-green-400 text-center shadow-inner" maxlength="10">
       </div>
 
       <div class="w-full flex flex-col gap-3">
-        <button id="btn-create-room" class="w-full bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl text-xl transition-colors shadow-md">새 방 만들기 (호스트)</button>
+        <button id="btn-create-room" class="w-full bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl text-xl transition-colors shadow-md font-bold">새 방 만들기 (호스트)</button>
         <div class="relative flex items-center py-2">
           <div class="flex-grow border-t border-gray-300"></div>
           <span class="flex-shrink-0 mx-4 text-gray-400 text-sm">또는</span>
           <div class="flex-grow border-t border-gray-300"></div>
         </div>
         <div class="flex gap-2">
-          <input type="text" id="input-room-code" placeholder="입장 코드" class="flex-1 border-2 border-gray-200 p-3 rounded-xl focus:outline-none focus:border-blue-400 text-center uppercase font-sans font-bold tracking-widest">
-          <button id="btn-join-room" class="bg-blue-500 hover:bg-blue-600 text-white px-6 rounded-xl text-lg transition-colors shadow-md w-24 flex-shrink-0">입장</button>
+          <input type="text" id="input-room-code" placeholder="입장 코드 5자리" class="flex-1 border-2 border-gray-200 p-3 rounded-xl focus:outline-none focus:border-blue-400 text-center uppercase font-sans font-bold tracking-widest shadow-inner">
+          <button id="btn-join-room" class="bg-blue-500 hover:bg-blue-600 text-white px-6 rounded-xl text-lg transition-colors shadow-md w-24 flex-shrink-0 font-bold">입장</button>
         </div>
       </div>
     </div>
 
     <!-- First Screen Hall of Fame -->
     <div class="w-full max-w-lg mt-6 bg-yellow-50 p-4 rounded-2xl shadow-md border-2 border-yellow-200 mb-8">
-      <h3 class="text-xl text-yellow-600 font-bold mb-3 text-center border-b border-yellow-200 pb-2">🌟 명예의 전당</h3>
-      <ul id="login-hof-list" class="space-y-2 max-h-48 overflow-y-auto">
+      <h3 class="text-xl text-yellow-600 font-bold mb-3 text-center border-b border-yellow-200 pb-2">🌟 명예의 전당 (역대 최고 기록)</h3>
+      <ul id="login-hof-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
         <li class="text-center text-gray-500 py-4">기록을 불러오는 중...</li>
       </ul>
     </div>
   </div>
 
   <!-- Screen: Teacher Auth -->
-  <div id="screen-teacher-auth" class="flex-1 hidden flex-col items-center justify-center p-4">
+  <div id="screen-teacher-auth" class="hidden flex-col items-center justify-center p-4 h-full w-full">
     <div class="bg-white p-8 rounded-3xl shadow-xl max-w-sm w-full border-4 border-gray-700 text-center">
       <h2 class="text-2xl font-bold mb-6 text-gray-800">교사 모드 인증</h2>
-      <input type="password" id="input-teacher-pw" placeholder="비밀번호 입력" class="w-full border-2 border-gray-300 p-3 rounded-xl focus:outline-none focus:border-gray-500 text-center mb-4 text-lg">
+      <input type="password" id="input-teacher-pw" placeholder="비밀번호 입력" class="w-full border-2 border-gray-300 p-3 rounded-xl focus:outline-none focus:border-gray-500 text-center mb-4 text-lg tracking-widest shadow-inner">
       <div class="flex gap-2">
-        <button id="btn-cancel-teacher-auth" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 p-3 rounded-xl transition-colors">취소</button>
-        <button id="btn-submit-teacher-auth" class="flex-1 bg-gray-700 hover:bg-gray-800 text-white p-3 rounded-xl transition-colors font-bold">확인</button>
+        <button id="btn-cancel-teacher-auth" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 p-3 rounded-xl transition-colors font-bold">돌아가기</button>
+        <button id="btn-submit-teacher-auth" class="flex-1 bg-gray-700 hover:bg-gray-800 text-white p-3 rounded-xl transition-colors font-bold shadow-md">인증하기</button>
       </div>
     </div>
   </div>
 
   <!-- Screen: Teacher Dashboard -->
-  <div id="screen-teacher-dash" class="flex-1 hidden flex-col items-center p-4 overflow-y-auto bg-gray-100">
+  <div id="screen-teacher-dash" class="hidden flex-col items-center p-4 overflow-y-auto bg-gray-100 h-full w-full">
     <div class="w-full max-w-2xl bg-white p-6 rounded-3xl shadow-xl border-4 border-gray-700 mt-4 mb-8">
       <div class="flex justify-between items-center mb-6 border-b-2 border-gray-200 pb-4">
         <h2 class="text-3xl font-bold text-gray-800">👨‍🏫 교사 모드 설정</h2>
-        <button id="btn-leave-teacher-dash" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors shadow">메인으로 가기</button>
+        <button id="btn-leave-teacher-dash" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors shadow font-bold">메인으로 가기</button>
       </div>
 
       <!-- Settings Block: Vocabulary -->
-      <div class="mb-8 bg-blue-50 p-4 rounded-xl border border-blue-200">
+      <div class="mb-8 bg-blue-50 p-4 rounded-xl border border-blue-200 shadow-sm">
         <h3 class="text-xl font-bold text-blue-800 mb-2">1. 단어장 관리</h3>
         <p class="text-sm text-gray-600 mb-2">게임에 출제될 단어들을 수정합니다. 단어는 쉼표(,) 또는 줄바꿈으로 구분해 주세요.</p>
-        <textarea id="setting-vocab-list" rows="6" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-blue-500 font-sans text-sm mb-2 resize-none"></textarea>
-        <button id="btn-save-vocab" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold transition-colors w-full">단어장 저장하기</button>
+        <textarea id="setting-vocab-list" rows="6" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-blue-500 font-sans text-sm mb-2 resize-none shadow-inner"></textarea>
+        <button id="btn-save-vocab" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold transition-colors w-full shadow">단어장 저장 및 적용</button>
       </div>
 
       <!-- Settings Block: Hall of Fame -->
-      <div class="mb-8 bg-yellow-50 p-4 rounded-xl border border-yellow-200">
+      <div class="mb-8 bg-yellow-50 p-4 rounded-xl border border-yellow-200 shadow-sm">
         <h3 class="text-xl font-bold text-yellow-800 mb-2">2. 명예의 전당 초기화</h3>
         <p class="text-sm text-gray-600 mb-3">현재 누적된 모든 명예의 전당 순위 기록을 완전히 삭제합니다.</p>
-        <button id="btn-reset-hof" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-bold transition-colors w-full shadow">기록 초기화 실행</button>
+        <button id="btn-reset-hof" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-bold transition-colors w-full shadow">순위 기록 영구 삭제</button>
       </div>
 
       <!-- Settings Block: Password -->
-      <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+      <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm">
         <h3 class="text-xl font-bold text-gray-800 mb-2">3. 비밀번호 변경</h3>
         <div class="flex gap-2">
-          <input type="text" id="input-new-pw" placeholder="새로운 비밀번호" class="flex-1 border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-gray-500">
-          <button id="btn-change-pw" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-2 rounded-lg font-bold transition-colors shadow">변경</button>
+          <input type="text" id="input-new-pw" placeholder="새로운 비밀번호 입력" class="flex-1 border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-gray-500 shadow-inner">
+          <button id="btn-change-pw" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-2 rounded-lg font-bold transition-colors shadow">비밀번호 변경</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Screen 2: Lobby -->
-  <div id="screen-lobby" class="flex-1 hidden flex-col p-4 md:p-8 max-w-5xl w-full mx-auto">
+  <div id="screen-lobby" class="hidden flex-col p-4 md:p-8 max-w-5xl w-full mx-auto h-full">
     <div class="bg-white rounded-3xl shadow-xl flex flex-col h-full overflow-hidden border-4 border-green-200">
       <div class="bg-green-100 p-4 flex justify-between items-center border-b-2 border-green-200">
-        <h2 class="text-2xl text-green-700">대기실</h2>
+        <h2 class="text-2xl font-bold text-green-700">대기실</h2>
         <div class="bg-white px-4 py-2 rounded-xl shadow font-sans font-bold tracking-widest text-xl text-gray-700">
           코드: <span id="lobby-room-code" class="text-blue-600"></span>
         </div>
-        <button id="btn-leave-lobby" class="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-lg transition-colors shadow">나가기</button>
+        <button id="btn-leave-lobby" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors shadow font-bold">방 나가기</button>
       </div>
       
       <div class="flex-1 flex flex-col md:flex-row p-6 gap-6 overflow-hidden">
         <!-- Player List -->
         <div class="flex-1 flex flex-col bg-gray-50 rounded-2xl p-4 border-2 border-gray-100 overflow-y-auto">
-          <h3 class="text-xl mb-4 text-gray-600 border-b pb-2">참가자 목록 (<span id="player-count">0</span>명)</h3>
+          <h3 class="text-xl mb-4 text-gray-600 border-b pb-2 font-bold">참가자 목록 (<span id="player-count">0</span>명)</h3>
           <ul id="lobby-player-list" class="space-y-3">
             <!-- Players injected here -->
           </ul>
@@ -179,26 +179,26 @@
         
         <!-- Settings (Host) -->
         <div class="w-full md:w-1/3 flex flex-col gap-4">
-          <div id="host-settings" class="bg-blue-50 rounded-2xl p-4 border-2 border-blue-100 hidden flex-col gap-4">
-            <h3 class="text-xl text-blue-700 border-b border-blue-200 pb-2">게임 설정 (호스트)</h3>
+          <div id="host-settings" class="bg-blue-50 rounded-2xl p-4 border-2 border-blue-100 hidden flex-col gap-4 shadow-sm">
+            <h3 class="text-xl font-bold text-blue-700 border-b border-blue-200 pb-2">게임 설정 (호스트 전용)</h3>
             
             <div class="flex flex-col gap-1">
-              <label class="text-gray-600">모드</label>
-              <select id="setting-mode" class="p-2 rounded-lg border focus:outline-none">
-                <option value="normal">Normal (글자수 공개)</option>
-                <option value="hidden">Hidden (글자수 비공개)</option>
+              <label class="text-gray-600 font-bold text-sm">진행 모드</label>
+              <select id="setting-mode" class="p-2 rounded-lg border focus:outline-none shadow-inner">
+                <option value="normal">Normal (글자 수 표시)</option>
+                <option value="hidden">Hidden (글자 수 숨김)</option>
               </select>
             </div>
             
             <div class="flex flex-col gap-1">
-              <label class="text-gray-600">총 라운드 수</label>
-              <input type="number" id="setting-rounds" value="3" min="1" max="10" class="p-2 rounded-lg border focus:outline-none text-center">
+              <label class="text-gray-600 font-bold text-sm">총 진행 라운드</label>
+              <input type="number" id="setting-rounds" value="3" min="1" max="10" class="p-2 rounded-lg border focus:outline-none text-center shadow-inner">
             </div>
           </div>
           
           <div class="mt-auto">
-            <button id="btn-start-game" class="w-full bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl text-2xl transition-colors shadow-lg hidden">게임 시작하기</button>
-            <p id="guest-waiting-msg" class="text-center text-gray-500 text-lg py-4">호스트가 게임 시작을 대기 중입니다...</p>
+            <button id="btn-start-game" class="w-full bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl text-2xl transition-colors shadow-lg hidden font-bold">게임 시작하기</button>
+            <p id="guest-waiting-msg" class="text-center text-gray-500 text-lg py-4 font-bold hidden">호스트가 게임을 시작할 때까지 기다려주세요...</p>
           </div>
         </div>
       </div>
@@ -206,19 +206,19 @@
   </div>
 
   <!-- Screen 3: Game -->
-  <div id="screen-game" class="flex-1 hidden flex-col p-2 md:p-4 max-w-7xl w-full mx-auto h-full">
+  <div id="screen-game" class="hidden flex-col p-2 md:p-4 max-w-7xl w-full mx-auto h-full">
     <!-- Top Bar Info -->
     <div class="bg-white rounded-t-2xl shadow-sm p-3 flex justify-between items-center border-b-4 border-green-200 shrink-0">
       <div class="flex gap-4 items-center">
-        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-lg font-bold" id="game-round-info">라운드: 1/3</span>
-        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg font-bold" id="game-mode-info">모드: Normal</span>
+        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-lg font-bold shadow-sm" id="game-round-info">라운드: 1/3</span>
+        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg font-bold shadow-sm hidden md:inline-block" id="game-mode-info">모드: Normal</span>
       </div>
-      <div class="text-center">
-        <div id="game-word-hint" class="text-3xl font-bold tracking-widest text-gray-800 bg-yellow-100 px-6 py-2 rounded-full shadow-inner inline-block">_ _ _</div>
+      <div class="text-center flex-1">
+        <div id="game-word-hint" class="text-2xl md:text-3xl font-bold tracking-widest text-gray-800 bg-yellow-100 px-6 py-2 rounded-full shadow-inner inline-block">_ _ _</div>
       </div>
       <div class="flex gap-4 items-center">
         <div class="text-right">
-          <div class="text-sm text-gray-500">남은 시간</div>
+          <div class="text-xs text-gray-500 font-bold">남은 시간</div>
           <div id="game-timer" class="text-3xl font-bold text-red-500 font-sans w-12 text-center">60</div>
         </div>
       </div>
@@ -228,62 +228,68 @@
       
       <!-- Left: Player Leaderboard -->
       <div class="w-1/4 md:w-64 bg-gray-50 border-r-2 border-gray-100 flex flex-col shrink-0">
-        <div class="p-3 bg-gray-100 font-bold text-gray-600 border-b text-center">순위표</div>
+        <div class="p-3 bg-gray-200 font-bold text-gray-700 border-b text-center shadow-inner">실시간 순위</div>
         <ul id="game-player-list" class="overflow-y-auto flex-1 p-2 space-y-2">
           <!-- Players injected here -->
         </ul>
       </div>
 
       <!-- Center: Canvas -->
-      <div class="flex-1 flex flex-col items-center justify-center bg-gray-200 relative overflow-hidden" id="canvas-container">
+      <div class="flex-1 flex flex-col items-center justify-center bg-gray-100 relative overflow-hidden" id="canvas-container">
         <!-- Overlay when not drawer -->
-        <div id="canvas-overlay" class="absolute inset-0 z-10 hidden items-center justify-center bg-black bg-opacity-10 pointer-events-none">
-          <div class="bg-white px-4 py-2 rounded-full shadow text-gray-700 font-bold animate-bounce mt-auto mb-10 pointer-events-auto opacity-70">
-            다른 플레이어가 그리는 중...
+        <div id="canvas-overlay" class="absolute inset-0 z-10 hidden items-center justify-center bg-black bg-opacity-5 pointer-events-none">
+          <div class="bg-white px-6 py-3 rounded-full shadow-lg text-gray-700 font-bold animate-bounce mt-auto mb-10 pointer-events-auto border-2 border-gray-200">
+            🎨 다른 플레이어가 그림을 그리는 중입니다...
           </div>
         </div>
         
-        <canvas id="drawing-canvas" width="800" height="600" class="bg-white shadow-md max-w-full max-h-full object-contain rounded"></canvas>
+        <canvas id="drawing-canvas" width="800" height="600" class="bg-white shadow-md max-w-full max-h-full object-contain rounded-lg border-2 border-gray-200"></canvas>
         
         <!-- Drawer Tools -->
-        <div id="drawer-tools" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-xl flex gap-3 items-center hidden z-20 border-2 border-gray-200">
-          <input type="color" id="tool-color" value="#000000" class="w-8 h-8 rounded cursor-pointer border-0 p-0">
-          <input type="range" id="tool-size" min="1" max="20" value="5" class="w-24">
-          <button id="btn-clear-canvas" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">전체 지우기</button>
+        <div id="drawer-tools" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-xl hidden gap-3 items-center z-20 border-2 border-gray-200">
+          <input type="color" id="tool-color" value="#000000" class="w-8 h-8 rounded cursor-pointer border-0 p-0 shadow-inner">
+          <input type="range" id="tool-size" min="1" max="20" value="5" class="w-24 cursor-pointer">
+          <button id="btn-clear-canvas" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm font-bold shadow transition-colors">전체 지우기</button>
         </div>
       </div>
 
       <!-- Right: Chat & Guess -->
       <div class="w-1/3 md:w-80 bg-gray-50 flex flex-col border-l-2 border-gray-100 shrink-0">
-        <div class="p-3 bg-blue-100 font-bold text-blue-800 border-b text-center shadow-sm z-10">채팅 및 정답</div>
+        <div class="p-3 bg-blue-100 font-bold text-blue-800 border-b text-center shadow-sm z-10">정답 입력 및 채팅</div>
         <div id="chat-messages" class="flex-1 overflow-y-auto p-3 space-y-2 text-base">
           <!-- Chat messages injected here -->
         </div>
         <div class="p-3 bg-white border-t">
-          <input type="text" id="chat-input" placeholder="정답/힌트 입력 (도배 금지)" class="w-full border-2 border-gray-300 p-3 rounded-xl focus:outline-none focus:border-blue-500 transition-colors" autocomplete="off">
+          <input type="text" id="chat-input" placeholder="정답 또는 힌트 입력..." class="w-full border-2 border-gray-300 p-3 rounded-xl focus:outline-none focus:border-blue-500 transition-colors shadow-inner" autocomplete="off">
         </div>
       </div>
     </div>
   </div>
 
   <!-- Screen 4: Game Over / Hall of Fame -->
-  <div id="screen-gameover" class="flex-1 hidden flex-col items-center justify-center p-4">
-    <div class="bg-white p-8 rounded-3xl shadow-xl max-w-2xl w-full flex flex-col items-center border-4 border-yellow-300">
-      <h1 class="text-5xl text-yellow-500 mb-2 font-bold text-center">🏆 게임 종료 🏆</h1>
-      <p class="text-xl text-gray-600 mb-8">최종 결과 및 명예의 전당</p>
+  <div id="screen-gameover" class="hidden flex-col items-center justify-center p-4 h-full w-full">
+    <div class="bg-white p-8 rounded-3xl shadow-xl max-w-2xl w-full flex flex-col items-center border-4 border-yellow-300 relative overflow-hidden">
+      <!-- Confetti decoration -->
+      <div class="absolute -top-10 -left-10 text-6xl opacity-50">🎉</div>
+      <div class="absolute -top-10 -right-10 text-6xl opacity-50">🎊</div>
+      
+      <h1 class="text-5xl text-yellow-500 mb-2 font-bold text-center z-10">🏆 게임 종료 🏆</h1>
+      <p class="text-xl text-gray-600 mb-8 font-bold z-10">최종 순위 및 결과</p>
       
       <!-- Final Podium -->
-      <div id="final-podium" class="w-full flex flex-col gap-3 mb-8 bg-yellow-50 p-6 rounded-2xl border-2 border-yellow-200">
+      <div id="final-podium" class="w-full flex flex-col gap-3 mb-8 bg-yellow-50 p-6 rounded-2xl border-2 border-yellow-200 shadow-inner z-10">
         <!-- Injected podium -->
       </div>
       
-      <h2 class="text-2xl text-blue-600 font-bold mb-4 w-full border-b-2 pb-2">🌟 명예의 전당 (역대 최고 기록)</h2>
-      <ul id="gameover-hof-list" class="w-full space-y-2 mb-8 max-h-48 overflow-y-auto">
+      <h2 class="text-2xl text-blue-600 font-bold mb-4 w-full border-b-2 pb-2 z-10">🌟 명예의 전당 업데이트 현황</h2>
+      <ul id="gameover-hof-list" class="w-full space-y-2 mb-8 max-h-40 overflow-y-auto pr-1 z-10">
         <!-- HOF injected here -->
       </ul>
 
-      <div class="flex gap-4 w-full">
-        <button id="btn-return-lobby" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white p-4 rounded-xl text-xl transition-colors shadow-md">대기실로 돌아가기</button>
+      <div class="flex gap-4 w-full z-10">
+        <button id="btn-leave-gameover" class="flex-1 bg-red-500 hover:bg-red-600 text-white p-4 rounded-xl text-xl transition-colors shadow-md font-bold">방 나가기</button>
+        <!-- 호스트에게만 보이는 버튼 -->
+        <button id="btn-return-lobby" class="flex-1 bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl text-xl transition-colors shadow-md font-bold hidden">대기실로 다시가기 (게임 재설정)</button>
       </div>
     </div>
   </div>
@@ -291,7 +297,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, increment, collection, getDocs, limit, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // --- Firebase Initialization ---
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'catch-mind-game';
@@ -302,8 +308,7 @@
       projectId: "skribble-2713c",
       storageBucket: "skribble-2713c.firebasestorage.app",
       messagingSenderId: "206350924074",
-      appId: "1:206350924074:web:a659dbd6fe13fc56cec653",
-      measurementId: "G-4FVQC2S3P5"
+      appId: "1:206350924074:web:a659dbd6fe13fc56cec653"
     };
     
     const app = initializeApp(firebaseConfig);
@@ -402,7 +407,8 @@
       gameover: {
         podium: document.getElementById('final-podium'),
         hofList: document.getElementById('gameover-hof-list'),
-        btnReturn: document.getElementById('btn-return-lobby')
+        btnReturn: document.getElementById('btn-return-lobby'),
+        btnLeave: document.getElementById('btn-leave-gameover')
       },
       modal: {
         container: document.getElementById('custom-modal'),
@@ -422,6 +428,7 @@
     function generateAvatarSVG(config) {
       if(!config) return '';
       const { color, eyeType, mouthType } = config;
+      
       const eyes = {
         1: `<circle cx="35" cy="45" r="5" fill="#333"/><circle cx="65" cy="45" r="5" fill="#333"/>`, 
         2: `<path d="M 30 45 Q 35 40 40 45" stroke="#333" stroke-width="3" fill="transparent"/><path d="M 60 45 Q 65 40 70 45" stroke="#333" stroke-width="3" fill="transparent"/>`, 
@@ -432,10 +439,17 @@
         2: `<path d="M 40 70 Q 50 60 60 70" stroke="#333" stroke-width="3" fill="transparent"/>`, 
         3: `<circle cx="50" cy="70" r="6" fill="#333"/>` 
       };
-      return `<svg viewBox="0 0 100 100" class="avatar-svg"><circle cx="50" cy="50" r="45" fill="${color}" stroke="#e5e7eb" stroke-width="4"/>${eyes[eyeType] || eyes[1]}${mouths[mouthType] || mouths[1]}</svg>`;
+
+      return `<svg viewBox="0 0 100 100" class="avatar-svg">
+        <circle cx="50" cy="50" r="45" fill="${color}" stroke="#e5e7eb" stroke-width="4"/>
+        ${eyes[eyeType] || eyes[1]}
+        ${mouths[mouthType] || mouths[1]}
+      </svg>`;
     }
 
-    function updateAvatarPreview() { els.login.avatarPreview.innerHTML = generateAvatarSVG(myAvatarState); }
+    function updateAvatarPreview() {
+      els.login.avatarPreview.innerHTML = generateAvatarSVG(myAvatarState);
+    }
 
     function randomizeAvatar() {
       const colors = ['#F87171', '#FBBF24', '#34D399', '#60A5FA', '#A78BFA', '#F472B6', '#4ADE80'];
@@ -445,10 +459,16 @@
       els.login.avatarColor.value = myAvatarState.color;
       updateAvatarPreview();
     }
-    els.login.btnRandAvatar.addEventListener('click', randomizeAvatar);
-    els.login.avatarColor.addEventListener('input', (e) => { myAvatarState.color = e.target.value; updateAvatarPreview(); });
-    randomizeAvatar();
 
+    els.login.btnRandAvatar.addEventListener('click', randomizeAvatar);
+    els.login.avatarColor.addEventListener('input', (e) => {
+      myAvatarState.color = e.target.value;
+      updateAvatarPreview();
+    });
+
+    randomizeAvatar(); // Init random
+
+    // --- Utility Functions ---
     function showModal(msg, title = "알림", callback = null) {
       els.modal.title.innerText = title;
       els.modal.msg.innerText = msg;
@@ -459,90 +479,857 @@
       };
     }
 
+    // ⭐ 핵심 개선: 화면 전환 시 충돌 방지를 위해 확실하게 모든 flex/hidden 제어
     function switchScreen(screenName) {
-      Object.values(els.screens).forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
-      els.screens[screenName].classList.remove('hidden');
-      els.screens[screenName].classList.add('flex');
+      Object.keys(els.screens).forEach(key => {
+        els.screens[key].classList.add('hidden');
+        els.screens[key].classList.remove('flex'); 
+      });
+      if(els.screens[screenName]) {
+        els.screens[screenName].classList.remove('hidden');
+        els.screens[screenName].classList.add('flex');
+      }
     }
 
-    // --- Firebase Auth & Logic ---
+    function generateRoomCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = '';
+      for(let i=0; i<5; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+      return code;
+    }
+
+    function getMaskedName(name) {
+      if (!name) return "손님";
+      if (name.length <= 1) return name;
+      if (name.length === 2) return name[0] + '*';
+      return name[0] + '*'.repeat(name.length - 2) + name[name.length - 1];
+    }
+
+    function formatSchoolInfo() {
+      const g = els.login.grade.value;
+      const c = els.login.class.value;
+      const n = els.login.number.value;
+      if (!g || !c || !n) return "손님";
+      return `${g}학년 ${c}반 ${n}번`;
+    }
+
+    function getPlayerName() {
+      return els.login.name.value.trim() || "무명";
+    }
+
+    function validateLogin() {
+      if (!els.login.grade.value || !els.login.class.value || !els.login.number.value) {
+         showModal("학년, 반, 번호를 모두 선택(입력)해주세요.");
+         return false;
+      }
+      if (!els.login.name.value.trim()) {
+        showModal("이름을 입력해주세요.");
+        return false;
+      }
+      return true;
+    }
+
+    // --- Firebase Auth Setup ---
+    const initAuth = async () => {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+      } catch (e) {
+        console.error("Auth error:", e);
+      }
+    };
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        currentUser = user; myUid = user.uid;
-        listenToHallOfFame(); listenToTeacherConfig();
+        currentUser = user;
+        myUid = user.uid;
+        
+        listenToHallOfFame();
+        listenToTeacherConfig();
       }
     });
 
-    signInAnonymously(auth).catch(console.error);
+    initAuth();
 
-    function updateGameUI(room) {
-      // 1. Top Info
-      els.game.roundInfo.innerText = `라운드: ${room.currentRound}/${room.maxRounds}`;
-      els.game.modeInfo.innerText = `모드: ${room.mode === 'hidden' ? 'Hidden' : 'Normal'}`;
-      const isDrawer = room.currentDrawer === myUid;
-      if (isDrawer) {
-        els.game.wordHint.innerText = `[출제] ${room.currentWord}`;
-        els.game.canvasOverlay.classList.add('hidden');
-        els.game.drawerTools.classList.remove('hidden');
-      } else {
-        els.game.drawerTools.classList.add('hidden');
-        els.game.canvasOverlay.classList.remove('hidden');
-      }
-
-      // 2. Player List (Ranked) - 점수 글자 크기 키움
-      const sortedPlayers = Object.values(room.players).sort((a,b) => b.score - a.score);
-      els.game.playerList.innerHTML = '';
-      sortedPlayers.forEach((p, idx) => {
-        const isMe = p.uid === myUid;
-        const li = document.createElement('li');
-        li.className = `flex items-center gap-2 p-2 rounded-xl border ${isMe ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-100'}`;
-        li.innerHTML = `
-          <div class="w-10 h-10 bg-gray-50 rounded-full border border-gray-200 p-0.5">${generateAvatarSVG(p.avatar)}</div>
-          <div class="flex flex-col flex-1">
-            <span class="font-bold text-gray-800 text-sm truncate">${p.name}</span>
-            <span class="text-lg font-black text-blue-600">${p.score}점</span>
-          </div>
-        `;
-        els.game.playerList.appendChild(li);
-      });
-      syncCanvas(room.strokes || []);
-      if (isHost) hostCheckTurnEnd(room);
+    // --- Teacher Config Listener ---
+    function listenToTeacherConfig() {
+      if (!currentUser) return;
+      const ref = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'teacherConfig');
+      unsubscribeTeacherConfig = onSnapshot(ref, (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.vocabulary && Array.isArray(data.vocabulary)) {
+            customVocabularyList = data.vocabulary;
+          }
+        }
+      }, (err) => console.error(err));
     }
 
-    // ... (기타 함수 생략 - 기능 동일) ...
+    // --- Hall of Fame Listeners & Logic ---
+    function renderHoFList(list, targetElementId) {
+      const el = document.getElementById(targetElementId);
+      if(!el) return;
+      el.innerHTML = '';
+      if (!list || list.length === 0) {
+        el.innerHTML = '<li class="text-center text-gray-500 py-4 font-bold">아직 기록이 없습니다.</li>';
+        return;
+      }
+      
+      const sorted = list.sort((a,b) => b.score - a.score).slice(0, 10);
+      sorted.forEach((r, idx) => {
+        el.innerHTML += `
+          <li class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+            <div class="flex gap-3 items-center">
+              <span class="font-bold text-yellow-500 w-6 text-center text-lg">${idx+1}.</span>
+              <div class="w-10 h-10 bg-gray-50 rounded-full p-0.5 border flex-shrink-0">${generateAvatarSVG(r.avatar)}</div>
+              <div class="flex flex-col">
+                <span class="font-bold text-gray-700 leading-tight">${r.maskedName}</span>
+                <span class="text-xs text-gray-400 text-left">${new Date(r.date).toLocaleDateString()}</span>
+              </div>
+            </div>
+            <div class="font-bold text-blue-500 text-lg">${r.score}점</div>
+          </li>
+        `;
+      });
+    }
+
     function listenToHallOfFame() {
       if (!currentUser) return;
       const hofRef = doc(db, 'artifacts', appId, 'public', 'data', 'hallOfFame', 'records');
+      if (unsubscribeHoF) unsubscribeHoF();
+      
       unsubscribeHoF = onSnapshot(hofRef, (snap) => {
         const list = snap.exists() ? snap.data().list : [];
         renderHoFList(list, 'login-hof-list');
         renderHoFList(list, 'gameover-hof-list');
       }, (err) => console.error(err));
     }
-    
-    function renderHoFList(list, targetElementId) {
-        const el = document.getElementById(targetElementId);
-        el.innerHTML = '';
-        const sorted = list.sort((a,b) => b.score - a.score).slice(0, 10);
-        sorted.forEach((r, idx) => {
-            el.innerHTML += `<li class="flex justify-between bg-white p-2 rounded border border-gray-100 text-sm"><span>${idx+1}. ${r.maskedName}</span><span class="font-bold text-blue-500">${r.score}점</span></li>`;
-        });
+
+    async function saveToHallOfFame(room) {
+      if (!isHost || !currentUser) return;
+      const sortedPlayers = Object.values(room.players).sort((a,b) => b.score - a.score);
+      const winner = sortedPlayers[0];
+      if (!winner || winner.score === 0) return;
+
+      const record = {
+        maskedName: getMaskedName(winner.name),
+        score: winner.score,
+        date: Date.now(),
+        avatar: winner.avatar
+      };
+
+      const hofRef = doc(db, 'artifacts', appId, 'public', 'data', 'hallOfFame', 'records');
+      await setDoc(hofRef, { list: arrayUnion(record) }, { merge: true });
     }
 
-    // 방 만들기/입장 처리시 increment 사용 보장
-    els.login.btnJoin.addEventListener('click', async () => {
-      if (!validateLogin()) return;
-      const code = els.login.roomCode.value.trim().toUpperCase();
-      const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', code);
-      const docSnap = await getDoc(roomRef);
-      if (docSnap.exists()) {
-          const players = docSnap.data().players || {};
-          players[myUid] = { uid: myUid, name: getPlayerName(), schoolInfo: formatSchoolInfo(), avatar: myAvatarState, score: 0, hasGuessed: false, joinedAt: Date.now() };
-          await updateDoc(roomRef, { players });
-          currentRoomCode = code;
-          joinGameFlow();
+    // --- Teacher Mode Flow ---
+    els.login.btnTeacherMode.addEventListener('click', () => {
+      switchScreen('teacherAuth');
+      els.teacher.pwInput.value = '';
+    });
+
+    els.teacher.btnAuthCancel.addEventListener('click', () => {
+      switchScreen('login');
+    });
+
+    els.teacher.btnAuthSubmit.addEventListener('click', async () => {
+      if (!currentUser) return showModal("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.");
+
+      const typedPw = els.teacher.pwInput.value;
+      if (!typedPw) return showModal("비밀번호를 입력하세요.");
+
+      try {
+        const ref = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'teacherConfig');
+        const snap = await getDoc(ref);
+        
+        let actualPw = '1234'; 
+        if (snap.exists() && snap.data().password) {
+          actualPw = snap.data().password;
+        } else {
+          await setDoc(ref, { password: '1234', vocabulary: defaultVocabularyList }, {merge: true});
+        }
+
+        if (typedPw === actualPw) {
+           openTeacherDashboard(snap.data() || { vocabulary: defaultVocabularyList });
+        } else {
+           showModal("비밀번호가 일치하지 않습니다.");
+        }
+      } catch (err) {
+        showModal(`접근이 거부되었습니다.\n\n[오류 원인]\n${err.message}`);
       }
     });
+
+    function openTeacherDashboard(configData) {
+      els.teacher.vocabTextarea.value = (configData.vocabulary || defaultVocabularyList).join(', ');
+      els.teacher.newPwInput.value = '';
+      switchScreen('teacherDash');
+    }
+
+    els.teacher.btnLeaveDash.addEventListener('click', () => switchScreen('login'));
+
+    els.teacher.btnSaveVocab.addEventListener('click', async () => {
+      if (!currentUser) return;
+      const text = els.teacher.vocabTextarea.value;
+      const list = text.split(/[\n,]+/).map(w => w.trim()).filter(w => w.length > 0);
+      
+      if(list.length < 5) return showModal("원활한 게임 진행을 위해 단어를 5개 이상 등록해주세요.");
+
+      try {
+        const ref = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'teacherConfig');
+        await setDoc(ref, { vocabulary: list }, {merge: true});
+        showModal("단어장이 성공적으로 저장 및 적용되었습니다!");
+      } catch(err) {
+        showModal(`단어장 저장 실패\n\n[오류 원인]\n${err.message}`);
+      }
+    });
+
+    els.teacher.btnResetHoF.addEventListener('click', async () => {
+      if (!currentUser) return;
+      try {
+        const ref = doc(db, 'artifacts', appId, 'public', 'data', 'hallOfFame', 'records');
+        await setDoc(ref, { list: [] });
+        showModal("명예의 전당이 완전히 영구 초기화되었습니다.");
+      } catch(err) {
+        showModal(`초기화 실패\n\n[오류 원인]\n${err.message}`);
+      }
+    });
+
+    els.teacher.btnChangePw.addEventListener('click', async () => {
+      if (!currentUser) return;
+      const newPw = els.teacher.newPwInput.value.trim();
+      if(newPw.length < 4) return showModal("비밀번호는 최소 4자리 이상 입력해주세요.");
+      
+      try {
+        const ref = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'teacherConfig');
+        await setDoc(ref, { password: newPw }, {merge: true});
+        showModal("비밀번호가 변경되었습니다. 다음 접속부터 새로운 비밀번호를 사용하세요.");
+        els.teacher.newPwInput.value = '';
+      } catch(err) {
+        showModal(`비밀번호 변경 실패\n\n[오류 원인]\n${err.message}`);
+      }
+    });
+
+
+    // --- Room Logic ---
+    els.login.btnCreate.addEventListener('click', async () => {
+      if (!currentUser) return showModal("서버 연결 대기중입니다.");
+      if (!validateLogin()) return;
+
+      const code = generateRoomCode();
+      const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', code);
+      
+      const initialPlayer = {
+        uid: myUid,
+        name: getPlayerName(),
+        schoolInfo: formatSchoolInfo(),
+        avatar: myAvatarState,
+        score: 0,
+        hasGuessed: false,
+        joinedAt: Date.now()
+      };
+
+      const initialRoom = {
+        host: myUid,
+        status: 'lobby', 
+        mode: 'normal',
+        maxRounds: 3,
+        currentRound: 1,
+        turnIndex: 0,
+        currentDrawer: null,
+        currentWord: '',
+        wordLength: 0,
+        roundEndTime: 0,
+        turnQueue: [],
+        players: { [myUid]: initialPlayer },
+        messages: [],
+        strokes: [],
+        createdAt: Date.now()
+      };
+
+      try {
+        await setDoc(roomRef, initialRoom);
+        isHost = true;
+        currentRoomCode = code;
+        joinGameFlow();
+      } catch (err) {
+        showModal(`방 생성 실패\n\n[오류 원인]\n${err.message}`);
+      }
+    });
+
+    els.login.btnJoin.addEventListener('click', async () => {
+      if (!currentUser) return showModal("서버 연결 대기중입니다.");
+      if (!validateLogin()) return;
+      
+      const code = els.login.roomCode.value.trim().toUpperCase();
+      if (!code) return showModal("입장 코드를 입력해주세요.");
+
+      const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', code);
+      try {
+        const docSnap = await getDoc(roomRef);
+        if (!docSnap.exists()) {
+          return showModal("존재하지 않는 방입니다.");
+        }
+        
+        const roomData = docSnap.data();
+        if (roomData.status !== 'lobby') {
+           return showModal("이미 게임이 진행 중이거나 종료된 방입니다.");
+        }
+
+        const newPlayer = {
+          uid: myUid,
+          name: getPlayerName(),
+          schoolInfo: formatSchoolInfo(),
+          avatar: myAvatarState,
+          score: 0,
+          hasGuessed: false,
+          joinedAt: Date.now()
+        };
+
+        // 데이터 원자적 업데이트 (덮어쓰기 방지)
+        await updateDoc(roomRef, {
+          [`players.${myUid}`]: newPlayer
+        });
+        
+        isHost = false;
+        currentRoomCode = code;
+        joinGameFlow();
+
+      } catch (err) {
+        showModal(`방 입장 실패\n\n[오류 원인]\n${err.message}`);
+      }
+    });
+
+    function joinGameFlow() {
+      els.lobby.code.innerText = currentRoomCode;
+      
+      if (isHost) {
+        els.lobby.hostSettings.classList.remove('hidden');
+        els.lobby.hostSettings.classList.add('flex');
+        els.lobby.btnStart.classList.remove('hidden');
+        els.lobby.guestMsg.classList.add('hidden');
+      } else {
+        els.lobby.hostSettings.classList.add('hidden');
+        els.lobby.hostSettings.classList.remove('flex');
+        els.lobby.btnStart.classList.add('hidden');
+        els.lobby.guestMsg.classList.remove('hidden');
+      }
+
+      switchScreen('lobby');
+      listenToRoom();
+    }
+
+    function listenToRoom() {
+      if (unsubscribeRoom) unsubscribeRoom();
+      const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomCode);
+      
+      unsubscribeRoom = onSnapshot(roomRef, (docSnap) => {
+        if (!docSnap.exists()) {
+          showModal("방이 삭제되었거나 초기화되었습니다.");
+          leaveGame();
+          return;
+        }
+
+        const room = docSnap.data();
+        roomDataCache = room;
+
+        if (!room.players || !room.players[myUid]) {
+          showModal("방에서 퇴장되었습니다.");
+          leaveGame();
+          return;
+        }
+
+        // --- 실시간 화면 라우팅 ---
+        if (room.status === 'lobby') {
+          if(!els.screens.lobby.classList.contains('flex')) switchScreen('lobby');
+          updateLobbyUI(room);
+        } else if (room.status === 'playing') {
+          if(!els.screens.game.classList.contains('flex')) {
+            switchScreen('game');
+            drawnStrokeCount = 0; 
+            ctx.clearRect(0, 0, els.game.canvas.width, els.game.canvas.height);
+          }
+          updateGameUI(room);
+        } else if (room.status === 'finished') {
+          if(!els.screens.gameover.classList.contains('flex')) {
+            switchScreen('gameover');
+            updateGameOverUI(room);
+          }
+        }
+      }, (error) => {
+        console.error("Room sync error:", error);
+      });
+    }
+
+    // --- UI Updaters ---
+    function updateLobbyUI(room) {
+      const players = Object.values(room.players || {}).sort((a,b) => a.joinedAt - b.joinedAt);
+      els.lobby.playerCount.innerText = players.length;
+      
+      els.lobby.playerList.innerHTML = '';
+      players.forEach(p => {
+        const li = document.createElement('li');
+        li.className = "flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-gray-100";
+        li.innerHTML = `
+          <div class="w-12 h-12 bg-gray-50 rounded-full border border-gray-200 p-1 flex-shrink-0">
+            ${generateAvatarSVG(p.avatar)}
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold text-gray-800 text-lg">${p.name} ${p.uid === room.host ? '<span class="text-yellow-500 text-sm">👑 호스트</span>' : ''}</span>
+            <span class="text-xs text-gray-500">${p.schoolInfo}</span>
+          </div>
+        `;
+        els.lobby.playerList.appendChild(li);
+      });
+    }
+
+    function updateGameUI(room) {
+      els.game.roundInfo.innerText = `라운드: ${room.currentRound}/${room.maxRounds}`;
+      els.game.modeInfo.innerText = `모드: ${room.mode === 'hidden' ? 'Hidden' : 'Normal'}`;
+      
+      const isDrawer = room.currentDrawer === myUid;
+      
+      if (isDrawer) {
+        els.game.wordHint.innerText = `[출제] ${room.currentWord}`;
+        els.game.wordHint.className = "text-xl md:text-2xl font-bold text-red-600 bg-red-100 px-6 py-2 rounded-full shadow-inner inline-block";
+        
+        els.game.canvasOverlay.classList.add('hidden');
+        els.game.canvasOverlay.classList.remove('flex'); 
+        
+        els.game.drawerTools.classList.remove('hidden');
+        els.game.drawerTools.classList.add('flex'); 
+      } else {
+        els.game.drawerTools.classList.add('hidden');
+        els.game.drawerTools.classList.remove('flex'); 
+        
+        els.game.canvasOverlay.classList.remove('hidden');
+        els.game.canvasOverlay.classList.add('flex'); 
+        
+        if (room.mode === 'hidden') {
+          els.game.wordHint.innerText = `? ? ? (글자수 비밀)`;
+          els.game.wordHint.className = "text-xl md:text-2xl font-bold tracking-widest text-purple-600 bg-purple-100 px-6 py-2 rounded-full shadow-inner inline-block";
+        } else {
+          els.game.wordHint.innerText = Array(room.wordLength).fill('_').join(' ');
+          els.game.wordHint.className = "text-2xl md:text-3xl font-bold tracking-widest text-gray-800 bg-yellow-100 px-6 py-2 rounded-full shadow-inner inline-block";
+        }
+      }
+
+      const sortedPlayers = Object.values(room.players).sort((a,b) => b.score - a.score);
+      els.game.playerList.innerHTML = '';
+      sortedPlayers.forEach((p, idx) => {
+        const isMe = p.uid === myUid;
+        const isDrawingNow = p.uid === room.currentDrawer;
+        
+        const li = document.createElement('li');
+        li.className = `flex items-center gap-2 p-2 rounded-xl border ${isMe ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-100'} ${isDrawingNow ? 'ring-2 ring-red-400 shadow-md' : 'shadow-sm'}`;
+        
+        let rankMedal = `${idx+1}위`;
+        if(idx === 0) rankMedal = '🥇 1위';
+        if(idx === 1) rankMedal = '🥈 2위';
+        if(idx === 2) rankMedal = '🥉 3위';
+
+        li.innerHTML = `
+          <div class="text-sm font-bold w-12 text-center text-gray-600 whitespace-nowrap">${rankMedal}</div>
+          <div class="w-10 h-10 bg-gray-50 rounded-full border border-gray-200 p-0.5 flex-shrink-0 relative">
+            ${generateAvatarSVG(p.avatar)}
+            ${isDrawingNow ? '<div class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded shadow animate-pulse">🖌️</div>' : ''}
+            ${p.hasGuessed ? '<div class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-1 rounded shadow">⭕</div>' : ''}
+          </div>
+          <div class="flex flex-col flex-1 overflow-hidden">
+            <span class="font-bold text-gray-800 truncate leading-tight">${p.name}</span>
+            <span class="text-sm text-blue-600 font-bold">${p.score}점</span>
+          </div>
+        `;
+        els.game.playerList.appendChild(li);
+      });
+
+      renderChat(room.messages || []);
+      syncCanvas(room.strokes || []);
+      
+      if (isHost) hostCheckTurnEnd(room);
+    }
+
+    function renderChat(messages) {
+      els.game.chatMessages.innerHTML = '';
+      messages.forEach(m => {
+        const div = document.createElement('div');
+        if (m.type === 'system') {
+          div.className = "bg-green-100 text-green-800 px-3 py-2 rounded-lg font-bold text-center text-sm my-1 shadow-sm";
+          div.innerText = m.text;
+        } else {
+          div.className = `mb-1 p-2 rounded-lg shadow-sm ${m.senderUid === myUid ? 'bg-blue-100 ml-auto max-w-[85%]' : 'bg-white max-w-[85%] border'}`;
+          div.innerHTML = `
+            <div class="text-xs text-gray-500 mb-0.5 font-bold">${m.senderName}</div>
+            <div class="break-words text-gray-800 leading-snug text-sm">${m.text}</div>
+          `;
+        }
+        els.game.chatMessages.appendChild(div);
+      });
+      els.game.chatMessages.scrollTop = els.game.chatMessages.scrollHeight;
+    }
+
+    // --- Timer Management ---
+    setInterval(() => {
+      if (!roomDataCache || roomDataCache.status !== 'playing') return;
+      const timeLeft = Math.max(0, Math.floor((roomDataCache.roundEndTime - Date.now()) / 1000));
+      els.game.timer.innerText = timeLeft;
+    }, 1000);
+
+    // --- Host Logic: Turn Management ---
+    els.lobby.btnStart.addEventListener('click', async () => {
+      if (!isHost) return;
+      const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomCode);
+      
+      const mode = els.lobby.settingMode.value;
+      const maxRounds = parseInt(els.lobby.settingRounds.value) || 3;
+      
+      const players = roomDataCache.players;
+      const turnQueue = Object.values(players)
+        .sort((a,b) => b.joinedAt - a.joinedAt)
+        .map(p => p.uid);
+
+      const firstDrawer = turnQueue[0];
+      const activeList = getActiveVocabList();
+      const selectedWord = activeList[Math.floor(Math.random() * activeList.length)];
+
+      await updateDoc(roomRef, {
+        status: 'playing',
+        mode: mode,
+        maxRounds: maxRounds,
+        currentRound: 1,
+        turnQueue: turnQueue,
+        turnIndex: 0,
+        currentDrawer: firstDrawer,
+        currentWord: selectedWord,
+        wordLength: selectedWord.length,
+        roundEndTime: Date.now() + 60000,
+        strokes: [],
+        messages: [{ type: 'system', text: `게임이 시작되었습니다! 첫 출제자는 ${players[firstDrawer].name}님입니다.` }]
+      });
+    });
+
+    async function hostCheckTurnEnd(room) {
+      if (!isHost || room.status !== 'playing') return;
+      
+      const now = Date.now();
+      const isTimeUp = now >= room.roundEndTime;
+      
+      const guesserUids = Object.keys(room.players).filter(uid => uid !== room.currentDrawer);
+      const allGuessed = guesserUids.length > 0 && guesserUids.every(uid => room.players[uid].hasGuessed);
+
+      if (isTimeUp || allGuessed) {
+        if (room.changingTurn) return; 
+        
+        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomCode);
+        await updateDoc(roomRef, { changingTurn: true });
+
+        setTimeout(() => advanceTurn(room), 2500);
+      }
+    }
+
+    async function advanceTurn(room) {
+      let nextTurnIndex = room.turnIndex + 1;
+      let nextRound = room.currentRound;
+      
+      if (nextTurnIndex >= room.turnQueue.length) {
+        nextTurnIndex = 0;
+        nextRound++;
+      }
+
+      const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomCode);
+
+      if (nextRound > room.maxRounds) {
+        await updateDoc(roomRef, { status: 'finished', changingTurn: false });
+        saveToHallOfFame(room);
+        return;
+      }
+
+      const updatedPlayers = { ...room.players };
+      Object.keys(updatedPlayers).forEach(uid => updatedPlayers[uid].hasGuessed = false);
+
+      const nextDrawer = room.turnQueue[nextTurnIndex];
+      const activeList = getActiveVocabList();
+      const nextWord = activeList[Math.floor(Math.random() * activeList.length)];
+      
+      const turnMsg = { type: 'system', text: `라운드 ${nextRound}, 새로운 출제자는 ${updatedPlayers[nextDrawer].name}님입니다.` };
+      
+      let newMessages = room.messages.slice(-40);
+      newMessages.push(turnMsg);
+
+      await updateDoc(roomRef, {
+        currentRound: nextRound,
+        turnIndex: nextTurnIndex,
+        currentDrawer: nextDrawer,
+        currentWord: nextWord,
+        wordLength: nextWord.length,
+        roundEndTime: Date.now() + 60000,
+        players: updatedPlayers,
+        strokes: [],
+        messages: newMessages,
+        changingTurn: false
+      });
+    }
+
+    // --- Chat and Guessing Logic ---
+    function checkSpam() {
+      const now = Date.now();
+      chatTimestamps.push(now);
+      chatTimestamps = chatTimestamps.filter(time => now - time <= 3000);
+      return chatTimestamps.length >= 5;
+    }
+
+    els.game.chatInput.addEventListener('keypress', async (e) => {
+      if (e.key === 'Enter') {
+        const text = els.game.chatInput.value.trim();
+        if (!text) return;
+        els.game.chatInput.value = '';
+
+        if (checkSpam()) {
+          showModal("경고: 도배 행위로 인해 게임에서 퇴장됩니다.", "퇴장 안내", () => kickMyself());
+          return;
+        }
+
+        const room = roomDataCache;
+        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomCode);
+        const myPlayerObj = room.players[myUid];
+
+        if (room.currentDrawer === myUid) {
+          const msg = { type: 'chat', senderUid: myUid, senderName: myPlayerObj.name + " (출제자)", text: `[힌트] ${text}`, timestamp: Date.now() };
+          await updateDoc(roomRef, { messages: arrayUnion(msg) });
+          return;
+        }
+
+        if (text === room.currentWord && !myPlayerObj.hasGuessed) {
+          const timeLeft = Math.max(0, room.roundEndTime - Date.now());
+          const maxTime = 60000;
+          
+          const guesserScore = Math.floor((timeLeft / maxTime) * 100) + 10;
+          const drawerScore = 20 + Math.floor((timeLeft / maxTime) * 20);
+
+          const sysMsg = { type: 'system', text: `🎉 ${myPlayerObj.name}님이 정답을 맞혔습니다! (+${guesserScore}점)` };
+
+          const updates = {
+            [`players.${myUid}.score`]: increment(guesserScore),
+            [`players.${myUid}.hasGuessed`]: true,
+            messages: arrayUnion(sysMsg)
+          };
+
+          if (room.currentDrawer && room.currentDrawer !== myUid) {
+             updates[`players.${room.currentDrawer}.score`] = increment(drawerScore);
+          }
+
+          await updateDoc(roomRef, updates);
+        } else {
+          const msg = { type: 'chat', senderUid: myUid, senderName: myPlayerObj.name, text: text, timestamp: Date.now() };
+          await updateDoc(roomRef, { messages: arrayUnion(msg) });
+        }
+      }
+    });
+
+    async function kickMyself() {
+      const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomCode);
+      if (roomDataCache && roomDataCache.players) {
+        const players = { ...roomDataCache.players };
+        delete players[myUid];
+        try { await updateDoc(roomRef, { players }); } catch(e){}
+      }
+      leaveGame();
+    }
+
+    // --- Canvas Drawing Logic ---
+    let isDrawing = false;
+    let currentStroke = null;
+
+    function resizeCanvas() {
+        const container = document.getElementById('canvas-container');
+        const canvas = els.game.canvas;
+        const ratio = Math.min(container.clientWidth / 800, container.clientHeight / 600) * 0.95;
+        canvas.style.transform = `scale(${ratio})`;
+        canvas.style.transformOrigin = 'center center';
+    }
+    window.addEventListener('resize', resizeCanvas);
+    const observer = new MutationObserver(() => {
+        if(!els.screens.game.classList.contains('hidden')) resizeCanvas();
+    });
+    observer.observe(els.screens.game, { attributes: true });
+
+    function getMousePos(evt) {
+        const rect = els.game.canvas.getBoundingClientRect();
+        const scaleX = els.game.canvas.width / rect.width;
+        const scaleY = els.game.canvas.height / rect.height;
+
+        let clientX = evt.clientX;
+        let clientY = evt.clientY;
+        
+        if(evt.touches && evt.touches.length > 0) {
+            clientX = evt.touches[0].clientX;
+            clientY = evt.touches[0].clientY;
+        }
+
+        return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+    }
+
+    const startDraw = (e) => {
+      if (!roomDataCache || roomDataCache.currentDrawer !== myUid) return;
+      isDrawing = true;
+      const pos = getMousePos(e);
+      
+      currentStroke = {
+        c: els.game.toolColor.value,
+        w: els.game.toolSize.value,
+        p: [{x: Math.round(pos.x), y: Math.round(pos.y)}]
+      };
+      
+      ctx.strokeStyle = currentStroke.c;
+      ctx.lineWidth = currentStroke.w;
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+      if(e.type==='touchstart') e.preventDefault();
+    };
+
+    const draw = (e) => {
+      if (!isDrawing || !roomDataCache || roomDataCache.currentDrawer !== myUid) return;
+      const pos = getMousePos(e);
+      
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+      
+      currentStroke.p.push({x: Math.round(pos.x), y: Math.round(pos.y)});
+      if(e.type==='touchmove') e.preventDefault();
+    };
+
+    const endDraw = async (e) => {
+      if (!isDrawing) return;
+      isDrawing = false;
+      if (!roomDataCache || roomDataCache.currentDrawer !== myUid) return;
+      
+      if (currentStroke.p.length > 0) {
+        if(currentStroke.p.length > 100) {
+           currentStroke.p = currentStroke.p.filter((_, i) => i % 2 === 0 || i === currentStroke.p.length - 1);
+        }
+        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomCode);
+        try { await updateDoc(roomRef, { strokes: arrayUnion(currentStroke) }); } catch(err){}
+      }
+      currentStroke = null;
+    };
+
+    els.game.canvas.addEventListener('mousedown', startDraw);
+    els.game.canvas.addEventListener('mousemove', draw);
+    els.game.canvas.addEventListener('mouseup', endDraw);
+    els.game.canvas.addEventListener('mouseleave', endDraw);
+    els.game.canvas.addEventListener('touchstart', startDraw, {passive: false});
+    els.game.canvas.addEventListener('touchmove', draw, {passive: false});
+    els.game.canvas.addEventListener('touchend', endDraw);
+
+    els.game.btnClearCanvas.addEventListener('click', async () => {
+      if (!roomDataCache || roomDataCache.currentDrawer !== myUid) return;
+      const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomCode);
+      await updateDoc(roomRef, { strokes: [] });
+    });
+
+    function syncCanvas(strokes) {
+      if (strokes.length === 0) {
+        ctx.clearRect(0, 0, els.game.canvas.width, els.game.canvas.height);
+        drawnStrokeCount = 0;
+        return;
+      }
+      
+      if (strokes.length > drawnStrokeCount) {
+        for (let i = drawnStrokeCount; i < strokes.length; i++) {
+          const s = strokes[i];
+          if (!s.p || s.p.length === 0) continue;
+          
+          ctx.strokeStyle = s.c;
+          ctx.lineWidth = s.w;
+          ctx.beginPath();
+          ctx.moveTo(s.p[0].x, s.p[0].y);
+          for (let j = 1; j < s.p.length; j++) ctx.lineTo(s.p[j].x, s.p[j].y);
+          ctx.stroke();
+        }
+        drawnStrokeCount = strokes.length;
+      } else if (strokes.length < drawnStrokeCount) {
+        ctx.clearRect(0, 0, els.game.canvas.width, els.game.canvas.height);
+        for (let i = 0; i < strokes.length; i++) {
+          const s = strokes[i];
+          if (!s.p || s.p.length === 0) continue;
+          ctx.strokeStyle = s.c;
+          ctx.lineWidth = s.w;
+          ctx.beginPath();
+          ctx.moveTo(s.p[0].x, s.p[0].y);
+          for (let j = 1; j < s.p.length; j++) ctx.lineTo(s.p[j].x, s.p[j].y);
+          ctx.stroke();
+        }
+        drawnStrokeCount = strokes.length;
+      }
+    }
+
+    // --- Game Over ---
+    function updateGameOverUI(room) {
+      // 호스트 버튼 표시 제어
+      if (isHost) {
+        els.gameover.btnReturn.classList.remove('hidden');
+      } else {
+        els.gameover.btnReturn.classList.add('hidden');
+      }
+
+      const sortedPlayers = Object.values(room.players).sort((a,b) => b.score - a.score);
+      
+      els.gameover.podium.innerHTML = '';
+      sortedPlayers.slice(0, 3).forEach((p, idx) => {
+        let medal = ['🥇 1위 (승리!)', '🥈 2위', '🥉 3위'][idx];
+        const color = ['bg-yellow-200', 'bg-gray-200', 'bg-orange-200'][idx];
+        
+        els.gameover.podium.innerHTML += `
+          <div class="flex items-center gap-4 p-3 ${color} rounded-xl shadow-sm border border-white">
+            <div class="w-16 h-16 bg-white rounded-full border-2 border-gray-300 p-1 flex-shrink-0">
+               ${generateAvatarSVG(p.avatar)}
+            </div>
+            <div class="flex-1">
+              <div class="text-xl font-bold">${medal}</div>
+              <div class="text-gray-700 font-bold">${p.schoolInfo} ${p.name}</div>
+            </div>
+            <div class="text-3xl font-bold text-blue-600">${p.score}점</div>
+          </div>
+        `;
+      });
+    }
+
+    // --- Leave / Cleanup ---
+    els.lobby.btnLeave.addEventListener('click', leaveGame);
+    els.gameover.btnLeave.addEventListener('click', leaveGame);
+
+    // 호스트 게임 초기화
+    els.gameover.btnReturn.addEventListener('click', async () => {
+      if(isHost) {
+        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomCode);
+        const resetPlayers = {...roomDataCache.players};
+        
+        // 데이터 완전 초기화
+        Object.keys(resetPlayers).forEach(k => {
+            resetPlayers[k].score = 0;
+            resetPlayers[k].hasGuessed = false;
+        });
+
+        await updateDoc(roomRef, { 
+            status: 'lobby', 
+            players: resetPlayers,
+            currentRound: 1,
+            turnIndex: 0,
+            strokes: [],
+            messages: []
+        });
+      }
+    });
+
+    function leaveGame() {
+      if (unsubscribeRoom) { unsubscribeRoom(); unsubscribeRoom = null; }
+      currentRoomCode = null;
+      isHost = false;
+      roomDataCache = null;
+      switchScreen('login'); // 로비 복귀 시 CSS 꼬임 없이 정상 이동 보장
+    }
 
   </script>
 </body>
