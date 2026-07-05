@@ -198,7 +198,7 @@
           
           <div class="mt-auto">
             <button id="btn-start-game" class="w-full bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl text-2xl transition-colors shadow-lg hidden">게임 시작하기</button>
-            <p id="guest-waiting-msg" class="text-center text-gray-500 text-lg py-4">호스트가 게임을 시작할 때까지 기다려주세요...</p>
+            <p id="guest-waiting-msg" class="text-center text-gray-500 text-lg py-4">호스트가 게임 시작을 대기 중입니다...</p>
           </div>
         </div>
       </div>
@@ -426,15 +426,15 @@
       const { color, eyeType, mouthType } = config;
       
       const eyes = {
-        1: `<circle cx="35" cy="45" r="5" fill="#333"/><circle cx="65" cy="45" r="5" fill="#333"/>`, // Normal
-        2: `<path d="M 30 45 Q 35 40 40 45" stroke="#333" stroke-width="3" fill="transparent"/><path d="M 60 45 Q 65 40 70 45" stroke="#333" stroke-width="3" fill="transparent"/>`, // Happy
-        3: `<path d="M 30 40 L 40 45" stroke="#333" stroke-width="3"/><path d="M 70 40 L 60 45" stroke="#333" stroke-width="3"/><circle cx="35" cy="47" r="3" fill="#333"/><circle cx="65" cy="47" r="3" fill="#333"/>` // Angry
+        1: `<circle cx="35" cy="45" r="5" fill="#333"/><circle cx="65" cy="45" r="5" fill="#333"/>`, 
+        2: `<path d="M 30 45 Q 35 40 40 45" stroke="#333" stroke-width="3" fill="transparent"/><path d="M 60 45 Q 65 40 70 45" stroke="#333" stroke-width="3" fill="transparent"/>`, 
+        3: `<path d="M 30 40 L 40 45" stroke="#333" stroke-width="3"/><path d="M 70 40 L 60 45" stroke="#333" stroke-width="3"/><circle cx="35" cy="47" r="3" fill="#333"/><circle cx="65" cy="47" r="3" fill="#333"/>` 
       };
       
       const mouths = {
-        1: `<path d="M 40 65 Q 50 75 60 65" stroke="#333" stroke-width="3" fill="transparent"/>`, // Smile
-        2: `<path d="M 40 70 Q 50 60 60 70" stroke="#333" stroke-width="3" fill="transparent"/>`, // Sad
-        3: `<circle cx="50" cy="70" r="6" fill="#333"/>` // Open
+        1: `<path d="M 40 65 Q 50 75 60 65" stroke="#333" stroke-width="3" fill="transparent"/>`, 
+        2: `<path d="M 40 70 Q 50 60 60 70" stroke="#333" stroke-width="3" fill="transparent"/>`, 
+        3: `<circle cx="50" cy="70" r="6" fill="#333"/>` 
       };
 
       return `<svg viewBox="0 0 100 100" class="avatar-svg">
@@ -469,15 +469,19 @@
     function showModal(msg, title = "알림", callback = null) {
       els.modal.title.innerText = title;
       els.modal.msg.innerText = msg;
-      els.modal.container.classList.add('active');
+      els.modal.container.classList.add('active'); // modal은 별도 css로 제어되므로 문제없음
       els.modal.btn.onclick = () => {
         els.modal.container.classList.remove('active');
         if (callback) callback();
       };
     }
 
+    // ⭐ 화면 전환 함수 버그 수정 (hidden과 flex 동시 제어)
     function switchScreen(screenName) {
-      Object.values(els.screens).forEach(el => el.classList.add('hidden'));
+      Object.values(els.screens).forEach(el => {
+        el.classList.add('hidden');
+        el.classList.remove('flex'); // 이 부분이 빠져있어 flex가 hidden을 덮어쓰고 있었습니다.
+      });
       els.screens[screenName].classList.remove('hidden');
       els.screens[screenName].classList.add('flex');
     }
@@ -548,6 +552,7 @@
 
     // --- Teacher Config Listener ---
     function listenToTeacherConfig() {
+      if (!currentUser) return;
       const ref = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'teacherConfig');
       unsubscribeTeacherConfig = onSnapshot(ref, (snap) => {
         if (snap.exists()) {
@@ -587,6 +592,7 @@
     }
 
     function listenToHallOfFame() {
+      if (!currentUser) return;
       const hofRef = doc(db, 'artifacts', appId, 'public', 'data', 'hallOfFame', 'records');
       if (unsubscribeHoF) unsubscribeHoF();
       
@@ -598,7 +604,7 @@
     }
 
     async function saveToHallOfFame(room) {
-      if (!isHost) return;
+      if (!isHost || !currentUser) return;
       const sortedPlayers = Object.values(room.players).sort((a,b) => b.score - a.score);
       const winner = sortedPlayers[0];
       if (!winner || winner.score === 0) return;
@@ -625,6 +631,8 @@
     });
 
     els.teacher.btnAuthSubmit.addEventListener('click', async () => {
+      if (!currentUser) return showModal("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.");
+
       const typedPw = els.teacher.pwInput.value;
       if (!typedPw) return showModal("비밀번호를 입력하세요.");
 
@@ -660,6 +668,7 @@
     els.teacher.btnLeaveDash.addEventListener('click', () => switchScreen('login'));
 
     els.teacher.btnSaveVocab.addEventListener('click', async () => {
+      if (!currentUser) return;
       const text = els.teacher.vocabTextarea.value;
       // split by comma or newline
       const list = text.split(/[\n,]+/).map(w => w.trim()).filter(w => w.length > 0);
@@ -676,6 +685,7 @@
     });
 
     els.teacher.btnResetHoF.addEventListener('click', async () => {
+      if (!currentUser) return;
       try {
         const ref = doc(db, 'artifacts', appId, 'public', 'data', 'hallOfFame', 'records');
         await setDoc(ref, { list: [] });
@@ -686,6 +696,7 @@
     });
 
     els.teacher.btnChangePw.addEventListener('click', async () => {
+      if (!currentUser) return;
       const newPw = els.teacher.newPwInput.value.trim();
       if(newPw.length < 4) return showModal("비밀번호는 최소 4자리 이상 입력해주세요.");
       
@@ -884,11 +895,18 @@
       if (isDrawer) {
         els.game.wordHint.innerText = `[출제] ${room.currentWord}`;
         els.game.wordHint.className = "text-2xl font-bold text-red-600 bg-red-100 px-6 py-2 rounded-full shadow-inner inline-block";
+        
         els.game.canvasOverlay.classList.add('hidden');
+        els.game.canvasOverlay.classList.remove('flex'); // 동기화
+        
         els.game.drawerTools.classList.remove('hidden');
+        els.game.drawerTools.classList.add('flex'); // 동기화
       } else {
         els.game.drawerTools.classList.add('hidden');
+        els.game.drawerTools.classList.remove('flex'); // 동기화
+        
         els.game.canvasOverlay.classList.remove('hidden');
+        els.game.canvasOverlay.classList.add('flex'); // 동기화
         
         if (room.mode === 'hidden') {
           els.game.wordHint.innerText = `? ? ? (글자수 비밀)`;
