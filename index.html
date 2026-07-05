@@ -12,16 +12,16 @@
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     
-    /* Custom Modal CSS */
+    #custom-modal { display: none; }
     #custom-modal.active { display: flex !important; }
     
     .avatar-svg { width: 100%; height: 100%; }
   </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col text-gray-800 relative">
+<body class="h-screen w-screen overflow-hidden flex flex-col text-gray-800">
 
   <!-- Custom Alert Modal -->
-  <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
     <div class="bg-white p-6 rounded-2xl shadow-xl max-w-sm w-full text-center transform transition-all">
       <h3 id="modal-title" class="text-xl font-bold mb-4 text-green-600">알림</h3>
       <p id="modal-message" class="text-lg mb-6 break-words whitespace-pre-wrap text-left"></p>
@@ -30,7 +30,7 @@
   </div>
 
   <!-- Screen 1: Login / Avatar Setup -->
-  <div id="screen-login" class="flex flex-col items-center p-4 overflow-y-auto h-full w-full">
+  <div id="screen-login" class="flex-col items-center p-4 overflow-y-auto h-full w-full" style="display: flex;">
     <!-- Top Bar -->
     <div class="w-full max-w-lg flex justify-end mb-2">
       <button id="btn-go-teacher-auth" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm transition-colors shadow flex items-center gap-1">
@@ -112,7 +112,7 @@
   </div>
 
   <!-- Screen: Teacher Auth -->
-  <div id="screen-teacher-auth" class="hidden flex-col items-center justify-center p-4 h-full w-full">
+  <div id="screen-teacher-auth" class="flex-col items-center justify-center p-4 h-full w-full" style="display: none;">
     <div class="bg-white p-8 rounded-3xl shadow-xl max-w-sm w-full border-4 border-gray-700 text-center">
       <h2 class="text-2xl font-bold mb-6 text-gray-800">교사 모드 인증</h2>
       <input type="password" id="input-teacher-pw" placeholder="비밀번호 입력" class="w-full border-2 border-gray-300 p-3 rounded-xl focus:outline-none focus:border-gray-500 text-center mb-4 text-lg tracking-widest shadow-inner">
@@ -124,7 +124,7 @@
   </div>
 
   <!-- Screen: Teacher Dashboard -->
-  <div id="screen-teacher-dash" class="hidden flex-col items-center p-4 overflow-y-auto bg-gray-100 h-full w-full">
+  <div id="screen-teacher-dash" class="flex-col items-center p-4 overflow-y-auto bg-gray-100 h-full w-full" style="display: none;">
     <div class="w-full max-w-2xl bg-white p-6 rounded-3xl shadow-xl border-4 border-gray-700 mt-4 mb-8">
       <div class="flex justify-between items-center mb-6 border-b-2 border-gray-200 pb-4">
         <h2 class="text-3xl font-bold text-gray-800">👨‍🏫 교사 모드 설정</h2>
@@ -158,7 +158,7 @@
   </div>
 
   <!-- Screen 2: Lobby -->
-  <div id="screen-lobby" class="hidden flex-col p-4 md:p-8 max-w-5xl w-full mx-auto h-full">
+  <div id="screen-lobby" class="flex-col p-4 md:p-8 max-w-5xl w-full mx-auto h-full" style="display: none;">
     <div class="bg-white rounded-3xl shadow-xl flex flex-col h-full overflow-hidden border-4 border-green-200">
       <div class="bg-green-100 p-4 flex justify-between items-center border-b-2 border-green-200">
         <h2 class="text-2xl font-bold text-green-700">대기실</h2>
@@ -179,7 +179,7 @@
         
         <!-- Settings (Host) -->
         <div class="w-full md:w-1/3 flex flex-col gap-4">
-          <div id="host-settings" class="bg-blue-50 rounded-2xl p-4 border-2 border-blue-100 hidden flex-col gap-4 shadow-sm">
+          <div id="host-settings" class="bg-blue-50 rounded-2xl p-4 border-2 border-blue-100 flex-col gap-4 shadow-sm" style="display: none;">
             <h3 class="text-xl font-bold text-blue-700 border-b border-blue-200 pb-2">게임 설정 (호스트 전용)</h3>
             
             <div class="flex flex-col gap-1">
@@ -197,8 +197,8 @@
           </div>
           
           <div class="mt-auto">
-            <button id="btn-start-game" class="w-full bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl text-2xl transition-colors shadow-lg hidden font-bold">게임 시작하기</button>
-            <p id="guest-waiting-msg" class="text-center text-gray-500 text-lg py-4 font-bold hidden">호스트가 게임을 시작할 때까지 기다려주세요...</p>
+            <button id="btn-start-game" class="w-full bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl text-2xl transition-colors shadow-lg font-bold" style="display: none;">게임 시작하기</button>
+            <p id="guest-waiting-msg" class="text-center text-gray-500 text-lg py-4 font-bold" style="display: none;">호스트가 게임을 시작할 때까지 기다려주세요...</p>
           </div>
         </div>
       </div>
@@ -206,7 +206,7 @@
   </div>
 
   <!-- Screen 3: Game -->
-  <div id="screen-game" class="hidden flex-col p-2 md:p-4 max-w-7xl w-full mx-auto h-full">
+  <div id="screen-game" class="flex-col p-2 md:p-4 max-w-7xl w-full mx-auto h-full" style="display: none;">
     <!-- Top Bar Info -->
     <div class="bg-white rounded-t-2xl shadow-sm p-3 flex justify-between items-center border-b-4 border-green-200 shrink-0">
       <div class="flex gap-4 items-center">
@@ -237,7 +237,7 @@
       <!-- Center: Canvas -->
       <div class="flex-1 flex flex-col items-center justify-center bg-gray-100 relative overflow-hidden" id="canvas-container">
         <!-- Overlay when not drawer -->
-        <div id="canvas-overlay" class="absolute inset-0 z-10 hidden items-center justify-center bg-black bg-opacity-5 pointer-events-none">
+        <div id="canvas-overlay" class="absolute inset-0 z-10 items-center justify-center bg-black bg-opacity-5 pointer-events-none" style="display: none;">
           <div class="bg-white px-6 py-3 rounded-full shadow-lg text-gray-700 font-bold animate-bounce mt-auto mb-10 pointer-events-auto border-2 border-gray-200">
             🎨 다른 플레이어가 그림을 그리는 중입니다...
           </div>
@@ -246,7 +246,7 @@
         <canvas id="drawing-canvas" width="800" height="600" class="bg-white shadow-md max-w-full max-h-full object-contain rounded-lg border-2 border-gray-200"></canvas>
         
         <!-- Drawer Tools -->
-        <div id="drawer-tools" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-xl hidden gap-3 items-center z-20 border-2 border-gray-200">
+        <div id="drawer-tools" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-xl gap-3 items-center z-20 border-2 border-gray-200" style="display: none;">
           <input type="color" id="tool-color" value="#000000" class="w-8 h-8 rounded cursor-pointer border-0 p-0 shadow-inner">
           <input type="range" id="tool-size" min="1" max="20" value="5" class="w-24 cursor-pointer">
           <button id="btn-clear-canvas" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm font-bold shadow transition-colors">전체 지우기</button>
@@ -267,7 +267,7 @@
   </div>
 
   <!-- Screen 4: Game Over / Hall of Fame -->
-  <div id="screen-gameover" class="hidden flex-col items-center justify-center p-4 h-full w-full">
+  <div id="screen-gameover" class="flex-col items-center justify-center p-4 h-full w-full" style="display: none;">
     <div class="bg-white p-8 rounded-3xl shadow-xl max-w-2xl w-full flex flex-col items-center border-4 border-yellow-300 relative overflow-hidden">
       <!-- Confetti decoration -->
       <div class="absolute -top-10 -left-10 text-6xl opacity-50">🎉</div>
@@ -289,7 +289,7 @@
       <div class="flex gap-4 w-full z-10">
         <button id="btn-leave-gameover" class="flex-1 bg-red-500 hover:bg-red-600 text-white p-4 rounded-xl text-xl transition-colors shadow-md font-bold">방 나가기</button>
         <!-- 호스트에게만 보이는 버튼 -->
-        <button id="btn-return-lobby" class="flex-1 bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl text-xl transition-colors shadow-md font-bold hidden">대기실로 다시가기 (게임 재설정)</button>
+        <button id="btn-return-lobby" class="flex-1 bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl text-xl transition-colors shadow-md font-bold" style="display: none;">대기실로 다시가기 (게임 재설정)</button>
       </div>
     </div>
   </div>
@@ -422,6 +422,14 @@
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
+    // --- 에러 핸들러 (숨겨진 에러가 발생 시 알림창 출력) ---
+    window.addEventListener('error', (event) => {
+        showModal(`예기치 않은 시스템 오류가 발생했습니다.\n\n${event.message}`);
+    });
+    window.addEventListener('unhandledrejection', (event) => {
+        showModal(`서버 비동기 처리 중 오류가 발생했습니다.\n\n${event.reason}`);
+    });
+
     // --- Avatar System (SVG) ---
     let myAvatarState = { color: '#4ADE80', eyeType: 1, mouthType: 1 };
     
@@ -479,15 +487,15 @@
       };
     }
 
-    // ⭐ 핵심 개선: 화면 전환 시 충돌 방지를 위해 확실하게 모든 flex/hidden 제어
+    // ⭐ CSS 클래스 충돌 방지를 위해 직접 인라인 스타일(style.display)만 제어합니다.
     function switchScreen(screenName) {
       Object.keys(els.screens).forEach(key => {
-        els.screens[key].classList.add('hidden');
-        els.screens[key].classList.remove('flex'); 
+        if (els.screens[key]) {
+          els.screens[key].style.display = 'none';
+        }
       });
       if(els.screens[screenName]) {
-        els.screens[screenName].classList.remove('hidden');
-        els.screens[screenName].classList.add('flex');
+        els.screens[screenName].style.display = 'flex';
       }
     }
 
@@ -806,15 +814,13 @@
       els.lobby.code.innerText = currentRoomCode;
       
       if (isHost) {
-        els.lobby.hostSettings.classList.remove('hidden');
-        els.lobby.hostSettings.classList.add('flex');
-        els.lobby.btnStart.classList.remove('hidden');
-        els.lobby.guestMsg.classList.add('hidden');
+        els.lobby.hostSettings.style.display = 'flex';
+        els.lobby.btnStart.style.display = 'block';
+        els.lobby.guestMsg.style.display = 'none';
       } else {
-        els.lobby.hostSettings.classList.add('hidden');
-        els.lobby.hostSettings.classList.remove('flex');
-        els.lobby.btnStart.classList.add('hidden');
-        els.lobby.guestMsg.classList.remove('hidden');
+        els.lobby.hostSettings.style.display = 'none';
+        els.lobby.btnStart.style.display = 'none';
+        els.lobby.guestMsg.style.display = 'block';
       }
 
       switchScreen('lobby');
@@ -843,17 +849,17 @@
 
         // --- 실시간 화면 라우팅 ---
         if (room.status === 'lobby') {
-          if(!els.screens.lobby.classList.contains('flex')) switchScreen('lobby');
+          if(els.screens.lobby.style.display !== 'flex') switchScreen('lobby');
           updateLobbyUI(room);
         } else if (room.status === 'playing') {
-          if(!els.screens.game.classList.contains('flex')) {
+          if(els.screens.game.style.display !== 'flex') {
             switchScreen('game');
             drawnStrokeCount = 0; 
             ctx.clearRect(0, 0, els.game.canvas.width, els.game.canvas.height);
           }
           updateGameUI(room);
         } else if (room.status === 'finished') {
-          if(!els.screens.gameover.classList.contains('flex')) {
+          if(els.screens.gameover.style.display !== 'flex') {
             switchScreen('gameover');
             updateGameOverUI(room);
           }
@@ -895,17 +901,11 @@
         els.game.wordHint.innerText = `[출제] ${room.currentWord}`;
         els.game.wordHint.className = "text-xl md:text-2xl font-bold text-red-600 bg-red-100 px-6 py-2 rounded-full shadow-inner inline-block";
         
-        els.game.canvasOverlay.classList.add('hidden');
-        els.game.canvasOverlay.classList.remove('flex'); 
-        
-        els.game.drawerTools.classList.remove('hidden');
-        els.game.drawerTools.classList.add('flex'); 
+        els.game.canvasOverlay.style.display = 'none';
+        els.game.drawerTools.style.display = 'flex';
       } else {
-        els.game.drawerTools.classList.add('hidden');
-        els.game.drawerTools.classList.remove('flex'); 
-        
-        els.game.canvasOverlay.classList.remove('hidden');
-        els.game.canvasOverlay.classList.add('flex'); 
+        els.game.drawerTools.style.display = 'none';
+        els.game.canvasOverlay.style.display = 'flex';
         
         if (room.mode === 'hidden') {
           els.game.wordHint.innerText = `? ? ? (글자수 비밀)`;
@@ -1151,7 +1151,7 @@
     }
     window.addEventListener('resize', resizeCanvas);
     const observer = new MutationObserver(() => {
-        if(!els.screens.game.classList.contains('hidden')) resizeCanvas();
+        if(els.screens.game.style.display === 'flex') resizeCanvas();
     });
     observer.observe(els.screens.game, { attributes: true });
 
@@ -1269,9 +1269,9 @@
     function updateGameOverUI(room) {
       // 호스트 버튼 표시 제어
       if (isHost) {
-        els.gameover.btnReturn.classList.remove('hidden');
+        els.gameover.btnReturn.style.display = 'block';
       } else {
-        els.gameover.btnReturn.classList.add('hidden');
+        els.gameover.btnReturn.style.display = 'none';
       }
 
       const sortedPlayers = Object.values(room.players).sort((a,b) => b.score - a.score);
@@ -1328,7 +1328,7 @@
       currentRoomCode = null;
       isHost = false;
       roomDataCache = null;
-      switchScreen('login'); // 로비 복귀 시 CSS 꼬임 없이 정상 이동 보장
+      switchScreen('login');
     }
 
   </script>
