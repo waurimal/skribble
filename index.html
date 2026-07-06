@@ -193,7 +193,7 @@
               </select>
             </div>
 
-            <!-- 신규 추가된 단어장 주제 선택 -->
+            <!-- 단어장 주제 선택 -->
             <div class="flex flex-col gap-1 mt-2">
               <label class="text-gray-600 font-bold text-sm">단어장 주제</label>
               <select id="setting-vocab-category" class="p-2 rounded-lg border focus:outline-none shadow-inner">
@@ -338,8 +338,14 @@
     let chatTimestamps = [];
     let drawnStrokeCount = 0;
 
+    // 다중 탭 테스트를 위한 탭별 고유 ID (같은 브라우저에서 탭을 여러 개 띄워도 전부 다른 유저로 인식)
+    let tabId = sessionStorage.getItem('catchmind_tab_id');
+    if (!tabId) {
+      tabId = Math.random().toString(36).substring(2, 10);
+      sessionStorage.setItem('catchmind_tab_id', tabId);
+    }
+
     // --- Vocabulary List (Categories) ---
-    // 기본 단어장은 1개의 테마를 가진 객체로 변경
     const defaultVocabulary = {
       "기본 단어장": [
         "민주주의", "광합성", "인공지능", "생태계", "지구온난화", "독립운동", "피타고라스", 
@@ -350,6 +356,13 @@
     };
     let customVocabulary = {};
     
+    function getActiveVocabList() {
+      if (customVocabulary && Object.keys(customVocabulary).length > 0) {
+        return customVocabulary;
+      }
+      return defaultVocabulary;
+    }
+
     // --- DOM Elements ---
     const els = {
       screens: {
@@ -393,7 +406,7 @@
         btnLeave: document.getElementById('btn-leave-lobby'),
         hostSettings: document.getElementById('host-settings'),
         settingMode: document.getElementById('setting-mode'),
-        settingVocabCategory: document.getElementById('setting-vocab-category'), // 신규 추가
+        settingVocabCategory: document.getElementById('setting-vocab-category'),
         settingRounds: document.getElementById('setting-rounds'),
         btnStart: document.getElementById('btn-start-game'),
         guestMsg: document.getElementById('guest-waiting-msg')
@@ -563,7 +576,8 @@
     onAuthStateChanged(auth, (user) => {
       if (user) {
         currentUser = user;
-        myUid = user.uid;
+        // ⭐ UID 뒤에 탭별 고유 ID를 붙여서 한 컴퓨터로 여러 브라우저 탭 테스트 시 충돌 완벽 방지
+        myUid = user.uid + "_" + tabId; 
         
         listenToHallOfFame();
         listenToTeacherConfig();
@@ -579,21 +593,17 @@
       unsubscribeTeacherConfig = onSnapshot(ref, (snap) => {
         if (snap.exists()) {
           const data = snap.data();
-          // 새로운 구조 (객체형) 지원
           if (data.vocabularyObj) {
             customVocabulary = data.vocabularyObj;
           } 
-          // 구버전(배열형) 마이그레이션 호환성
           else if (data.vocabulary && Array.isArray(data.vocabulary)) {
             customVocabulary = { "기본 주제": data.vocabulary };
           }
-          
           updateLobbyVocabOptions();
         }
       }, (err) => console.error(err));
     }
 
-    // 로비의 호스트용 주제 선택 콤보박스 업데이트
     function updateLobbyVocabOptions() {
       const select = els.lobby.settingVocabCategory;
       if (!select) return;
@@ -610,7 +620,6 @@
         select.appendChild(opt);
       });
 
-      // 기존 선택값 유지 시도
       if (currentVal && vocabToUse[currentVal]) {
         select.value = currentVal;
       }
@@ -714,7 +723,6 @@
       }
     });
 
-    // 교사 모드 단어장 렌더링 로직
     function renderVocabCategories(vocabObj) {
       const container = els.teacher.vocabContainer;
       container.innerHTML = '';
@@ -761,7 +769,6 @@
       delBtn.addEventListener('click', () => div.remove());
       container.appendChild(div);
       
-      // 스크롤 맨 아래로
       container.scrollTop = container.scrollHeight;
     }
 
@@ -771,7 +778,6 @@
 
     function openTeacherDashboard(configData) {
       let vocabToRender = configData.vocabularyObj;
-      // 구버전 마이그레이션 처리
       if (!vocabToRender && configData.vocabulary) {
         vocabToRender = { "기본 주제": configData.vocabulary };
       }
@@ -810,7 +816,6 @@
 
       try {
         const ref = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'teacherConfig');
-        // 기존 vocabulary 필드는 버리고 vocabularyObj 로 일원화
         await setDoc(ref, { vocabularyObj: newVocab }, {merge: true});
         showModal("주제별 단어장이 성공적으로 저장 및 적용되었습니다!");
       } catch(err) {
@@ -941,7 +946,6 @@
         els.lobby.btnStart.style.display = 'block';
         els.lobby.guestMsg.style.display = 'none';
         
-        // 콤보박스 갱신 호출
         updateLobbyVocabOptions();
       } else {
         els.lobby.hostSettings.style.display = 'none';
@@ -1019,7 +1023,6 @@
     function updateGameUI(room) {
       els.game.roundInfo.innerText = `라운드: ${room.currentRound}/${room.maxRounds}`;
       
-      // 단어 주제 정보도 모드와 함께 표시
       const modeText = room.mode === 'hidden' ? 'Hidden' : 'Normal';
       const categoryText = room.categoryName ? `[${room.categoryName}] ` : '';
       els.game.modeInfo.innerText = `${categoryText}모드: ${modeText}`;
@@ -1114,7 +1117,6 @@
       const mode = els.lobby.settingMode.value;
       const maxRounds = parseInt(els.lobby.settingRounds.value) || 3;
       
-      // 선택된 주제 추출
       const selectedCategory = els.lobby.settingVocabCategory.value;
       const vocabToUse = (Object.keys(customVocabulary).length > 0) ? customVocabulary : defaultVocabulary;
       const activeList = vocabToUse[selectedCategory] || defaultVocabulary["기본 단어장"];
@@ -1140,7 +1142,6 @@
         roundEndTime: Date.now() + 60000,
         strokes: [],
         messages: [{ type: 'system', text: `[${selectedCategory}] 주제로 게임이 시작되었습니다! 첫 출제자는 ${players[firstDrawer].name}님입니다.` }],
-        // 게임 방에 사용할 전체 단어 리스트와 카테고리 이름 고정
         activeVocabList: activeList,
         categoryName: selectedCategory
       });
@@ -1187,7 +1188,6 @@
 
       const nextDrawer = room.turnQueue[nextTurnIndex];
       
-      // 방에 저장된 activeVocabList를 사용하여 다음 단어 선택
       const activeList = room.activeVocabList || defaultVocabulary["기본 단어장"];
       const nextWord = activeList[Math.floor(Math.random() * activeList.length)];
       
@@ -1234,7 +1234,6 @@
         const myPlayerObj = room.players[myUid];
 
         if (room.currentDrawer === myUid) {
-          // 출제자가 정답을 직접 언급하는지 검사 (띄어쓰기 무시)
           const answerStr = room.currentWord.replace(/\s+/g, '');
           const inputStr = text.replace(/\s+/g, '');
           
@@ -1452,7 +1451,6 @@
         const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomCode);
         const resetPlayers = {...roomDataCache.players};
         
-        // 데이터 완전 초기화
         Object.keys(resetPlayers).forEach(k => {
             resetPlayers[k].score = 0;
             resetPlayers[k].hasGuessed = false;
