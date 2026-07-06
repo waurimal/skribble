@@ -1234,6 +1234,15 @@
         const myPlayerObj = room.players[myUid];
 
         if (room.currentDrawer === myUid) {
+          // 출제자가 정답을 직접 언급하는지 검사 (띄어쓰기 무시)
+          const answerStr = room.currentWord.replace(/\s+/g, '');
+          const inputStr = text.replace(/\s+/g, '');
+          
+          if (inputStr.includes(answerStr)) {
+            showModal("출제자는 힌트에 정답 단어를 직접 포함할 수 없습니다!");
+            return;
+          }
+
           const msg = { type: 'chat', senderUid: myUid, senderName: myPlayerObj.name + " (출제자)", text: `[힌트] ${text}`, timestamp: Date.now() };
           await updateDoc(roomRef, { messages: arrayUnion(msg) });
           return;
