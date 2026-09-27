@@ -531,6 +531,48 @@
                         <div class="hof-subtitle">단원별·학급별 실시간 랭킹 순위표 (Top 30)</div>
                     </div>
 
+                    <!-- 1. 기간 선택 탭 (단어타자연습 표준 동일) -->
+                    <div class="hof-period-tabs flex gap-1 mb-2.5 p-1 bg-slate-100 rounded-xl">
+                        <button type="button" class="hof-period-tab flex-1 py-1.5 text-xs font-bold rounded-lg transition-all bg-white text-purple-700 shadow-2xs" id="hof-tab-all" onclick="setHofPeriod('all')">
+                            <i class="fas fa-infinity"></i> 전체
+                        </button>
+                        <button type="button" class="hof-period-tab flex-1 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800" id="hof-tab-month" onclick="setHofPeriod('month')">
+                            <i class="fas fa-calendar-alt"></i> 이번 달
+                        </button>
+                        <button type="button" class="hof-period-tab flex-1 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800" id="hof-tab-week" onclick="setHofPeriod('week')">
+                            <i class="fas fa-fire"></i> 이번 주
+                        </button>
+                    </div>
+
+                    <!-- 2. 단원별 필터 -->
+                    <div class="mb-2">
+                        <select id="hof-filter-unit" onchange="filterHofList()" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="ALL">전체 단원</option>
+                        </select>
+                    </div>
+
+                    <!-- 3. 학년 및 반 필터 -->
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <select id="hof-filter-grade" onchange="filterHofList()" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="ALL">전체 학년</option>
+                            <option value="3">3학년</option>
+                            <option value="4">4학년</option>
+                            <option value="5">5학년</option>
+                            <option value="6">6학년</option>
+                        </select>
+                        <select id="hof-filter-class" onchange="filterHofList()" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="ALL">전체 반</option>
+                            <option value="1">1반</option><option value="2">2반</option>
+                            <option value="3">3반</option><option value="4">4반</option>
+                            <option value="5">5반</option><option value="6">6반</option>
+                            <option value="7">7반</option><option value="8">8반</option>
+                            <option value="9">9반</option><option value="10">10반</option>
+                            <option value="11">11반</option><option value="12">12반</option>
+                            <option value="13">13반</option><option value="14">14반</option>
+                            <option value="15">15반</option>
+                        </select>
+                    </div>
+
                     <!-- 실시간 랭킹 목록 컨테이너 -->
                     <div id="hof-records-container" class="flex-1 overflow-y-auto custom-scrollbar max-h-[460px] space-y-2 pr-1">
                         <div class="text-center py-16 text-slate-400 text-xs font-bold">
