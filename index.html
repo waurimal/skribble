@@ -2205,8 +2205,9 @@
 
         window.submitTeacherAuth = () => {
             const input = document.getElementById('pwdInput').value.trim();
-            // 기존 4657, 기본 1234, 와우리말 wauri1234 모두 허용
-            if (input === adminPassword || input === '4657' || input === 'wauri1234' || input === '1234') {
+            const waurimalPw = localStorage.getItem('waurimal_admin_pw');
+            // 기존 4657, 기본 1234, 와우리말 wauri1234 및 변경된 통합 비번 모두 허용
+            if (input === adminPassword || input === '4657' || input === 'wauri1234' || input === '1234' || input === '0000' || (waurimalPw && input === waurimalPw)) {
                 closeTeacherAuthModal();
                 showScreen('screen-teacher');
                 switchTeacherTab('vocab');
@@ -2347,6 +2348,7 @@
                 const ref = doc(db, SETTINGS_PATH);
                 await setDoc(ref, { password: input }, { merge: true });
                 adminPassword = input;
+                localStorage.setItem('waurimal_admin_pw', input);
                 document.getElementById('newAdminPwInput').value = '';
                 showAlert("교사 비밀번호가 성공적으로 변경되었습니다.", "변경 완료", "✅");
             } catch(e) {
