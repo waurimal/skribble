@@ -969,7 +969,7 @@
 
         // Firebase 설정 (skribble-2713c 프로젝트)
         const firebaseConfig = {
-            apiKey: atob("QUl6YVN5RHBndzJ0dUpLSkFub1VfT0Z2V1J3Z2QxOGV1UXk0MmtF"),
+            apiKey: atob("QUl6YVN5Qjlvci1Ib1RaYVhzazdoeDRPZEJYSzhiNlRWVmdtTHpz"),
             authDomain: "skribble-2713c.firebaseapp.com",
             projectId: "skribble-2713c",
             storageBucket: "skribble-2713c.firebasestorage.app",
@@ -1283,8 +1283,14 @@
         window.openCreateRoomModal = async () => {
             syncProfileFromGnb();
             if (!currentUser) {
-                showAlert("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.", "알림");
-                return;
+                try {
+                    const cred = await signInAnonymously(auth);
+                    currentUser = cred.user;
+                    myUid = cred.user.uid + "_" + tabId;
+                } catch(e) {
+                    showAlert("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.", "알림");
+                    return;
+                }
             }
 
             const code = Math.floor(1000 + Math.random() * 9000).toString();
@@ -1351,6 +1357,16 @@
 
         async function joinRoomWithCode(code) {
             syncProfileFromGnb();
+            if (!currentUser) {
+                try {
+                    const cred = await signInAnonymously(auth);
+                    currentUser = cred.user;
+                    myUid = cred.user.uid + "_" + tabId;
+                } catch(e) {
+                    showAlert("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.", "알림");
+                    return;
+                }
+            }
             const roomRef = doc(db, ROOMS_PATH, code);
             const snap = await getDoc(roomRef);
 
