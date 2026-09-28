@@ -587,7 +587,7 @@
         <!-- ─────────────────────────────────────────── -->
         <!-- 2. 대기실 화면 (screen-lobby) -->
         <!-- ─────────────────────────────────────────── -->
-        <div  class="hidden max-w-2xl mx-auto w-full">
+        <div id="screen-lobby" class="hidden max-w-2xl mx-auto w-full">
             <div class="skribble-card">
                 <div class="flex justify-between items-center pb-4 border-b border-purple-100 mb-5">
                     <div>
@@ -1281,60 +1281,69 @@
         // ── 1. 방 만들기 & 참여하기 ──
         // ════════════════════════════════════════════════════════════════════
         window.openCreateRoomModal = async () => {
-            syncProfileFromGnb();
-            if (!currentUser) {
-                try {
-                    const cred = await signInAnonymously(auth);
-                    currentUser = cred.user;
-                    myUid = cred.user.uid + "_" + tabId;
-                } catch(e) {
-                    showAlert("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.", "알림");
-                    return;
+            const btn = document.querySelector('.btn-start-hero');
+            if (btn) btn.style.opacity = '0.6';
+            try {
+                syncProfileFromGnb();
+                if (!currentUser) {
+                    try {
+                        const cred = await signInAnonymously(auth);
+                        currentUser = cred.user;
+                        myUid = cred.user.uid + "_" + tabId;
+                    } catch(e) {
+                        showAlert("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.", "알림");
+                        return;
+                    }
                 }
+
+                const code = Math.floor(1000 + Math.random() * 9000).toString();
+                currentRoomCode = code;
+                isHost = true;
+
+                const selectedCat = Object.keys(vocabularyCache)[0] || "기본 주제";
+                const vocabList = vocabularyCache[selectedCat] || DEFAULT_VOCAB["기본 주제"];
+
+                const myPlayerObj = {
+                    uid: myUid,
+                    name: (studentProfile.grade && studentProfile.class) 
+                        ? `${studentProfile.grade}학년 ${studentProfile.class}반 ${studentProfile.name}` 
+                        : (studentProfile.name || '방장'),
+                    schoolInfo: (studentProfile.grade && studentProfile.class) ? `${studentProfile.grade}학년 ${studentProfile.class}반` : '',
+                    grade: studentProfile.grade || '',
+                    classNum: studentProfile.class || '',
+                    score: 0,
+                    isHost: true,
+                    avatar: myAvatar,
+                    hasGuessed: false
+                };
+
+                const roomRef = doc(db, ROOMS_PATH, code);
+                await setDoc(roomRef, {
+                    code: code,
+                    status: 'lobby',
+                    hostUid: myUid,
+                    maxRounds: 3,
+                    turnDuration: 60,
+                    categoryName: selectedCat,
+                    activeVocabList: vocabList,
+                    currentRound: 1,
+                    turnIndex: 0,
+                    currentWord: '',
+                    currentDrawer: myUid,
+                    turnQueue: [myUid],
+                    players: { [myUid]: myPlayerObj },
+                    strokes: [],
+                    messages: [{ type: 'system', text: '대기실이 생성되었습니다. 방 코드를 친구들에게 공유하세요!' }],
+                    createdAt: Date.now()
+                });
+
+                enterLobbyUI(code);
+            } catch(err) {
+                console.error("openCreateRoomModal failed:", err);
+                showAlert("방 생성 중 오류가 발생했습니다: " + err.message, "오류", "❌");
+            } finally {
+                if (btn) btn.style.opacity = '1';
             }
-
-            const code = Math.floor(1000 + Math.random() * 9000).toString();
-            currentRoomCode = code;
-            isHost = true;
-
-            const selectedCat = Object.keys(vocabularyCache)[0] || "기본 주제";
-            const vocabList = vocabularyCache[selectedCat] || DEFAULT_VOCAB["기본 주제"];
-
-            const myPlayerObj = {
-                uid: myUid,
-                name: (studentProfile.grade && studentProfile.class) 
-                    ? `${studentProfile.grade}학년 ${studentProfile.class}반 ${studentProfile.name}` 
-                    : (studentProfile.name || '방장'),
-                schoolInfo: (studentProfile.grade && studentProfile.class) ? `${studentProfile.grade}학년 ${studentProfile.class}반` : '',
-                grade: studentProfile.grade || '',
-                classNum: studentProfile.class || '',
-                score: 0,
-                isHost: true,
-                avatar: myAvatar,
-                hasGuessed: false
-            };
-
-            const roomRef = doc(db, ROOMS_PATH, code);
-            await setDoc(roomRef, {
-                code: code,
-                status: 'lobby',
-                hostUid: myUid,
-                maxRounds: 3,
-                turnDuration: 60,
-                categoryName: selectedCat,
-                activeVocabList: vocabList,
-                currentRound: 1,
-                turnIndex: 0,
-                currentWord: '',
-                currentDrawer: myUid,
-                turnQueue: [myUid],
-                players: { [myUid]: myPlayerObj },
-                strokes: [],
-                messages: [{ type: 'system', text: '대기실이 생성되었습니다. 방 코드를 친구들에게 공유하세요!' }],
-                createdAt: Date.now()
-            });
-
-            enterLobbyUI(code);
         };
 
         window.openJoinModal = () => {
@@ -1356,54 +1365,59 @@
         };
 
         async function joinRoomWithCode(code) {
-            syncProfileFromGnb();
-            if (!currentUser) {
-                try {
-                    const cred = await signInAnonymously(auth);
-                    currentUser = cred.user;
-                    myUid = cred.user.uid + "_" + tabId;
-                } catch(e) {
-                    showAlert("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.", "알림");
+            try {
+                syncProfileFromGnb();
+                if (!currentUser) {
+                    try {
+                        const cred = await signInAnonymously(auth);
+                        currentUser = cred.user;
+                        myUid = cred.user.uid + "_" + tabId;
+                    } catch(e) {
+                        showAlert("서버와 연결 중입니다. 잠시 후 다시 시도해주세요.", "알림");
+                        return;
+                    }
+                }
+                const roomRef = doc(db, ROOMS_PATH, code);
+                const snap = await getDoc(roomRef);
+
+                if (!snap.exists()) {
+                    showAlert("존재하지 않는 방 코드입니다.", "입장 실패", "❌");
                     return;
                 }
+
+                const data = snap.data();
+                if (data.status !== 'lobby') {
+                    showAlert("이미 게임이 진행 중인 방입니다.", "입장 불가", "⚠️");
+                    return;
+                }
+
+                currentRoomCode = code;
+                isHost = (data.hostUid === myUid);
+
+                const myPlayerObj = {
+                    uid: myUid,
+                    name: (studentProfile.grade && studentProfile.class) 
+                        ? `${studentProfile.grade}학년 ${studentProfile.class}반 ${studentProfile.name}` 
+                        : (studentProfile.name || '학생'),
+                    schoolInfo: (studentProfile.grade && studentProfile.class) ? `${studentProfile.grade}학년 ${studentProfile.class}반` : '',
+                    grade: studentProfile.grade || '',
+                    classNum: studentProfile.class || '',
+                    score: 0,
+                    isHost: isHost,
+                    avatar: myAvatar,
+                    hasGuessed: false
+                };
+
+                await updateDoc(roomRef, {
+                    [`players.${myUid}`]: myPlayerObj,
+                    turnQueue: arrayUnion(myUid)
+                });
+
+                enterLobbyUI(code);
+            } catch(err) {
+                console.error("joinRoomWithCode failed:", err);
+                showAlert("방 입장 중 오류가 발생했습니다: " + err.message, "오류", "❌");
             }
-            const roomRef = doc(db, ROOMS_PATH, code);
-            const snap = await getDoc(roomRef);
-
-            if (!snap.exists()) {
-                showAlert("존재하지 않는 방 코드입니다.", "입장 실패", "❌");
-                return;
-            }
-
-            const data = snap.data();
-            if (data.status !== 'lobby') {
-                showAlert("이미 게임이 진행 중인 방입니다.", "입장 불가", "⚠️");
-                return;
-            }
-
-            currentRoomCode = code;
-            isHost = (data.hostUid === myUid);
-
-            const myPlayerObj = {
-                uid: myUid,
-                name: (studentProfile.grade && studentProfile.class) 
-                    ? `${studentProfile.grade}학년 ${studentProfile.class}반 ${studentProfile.name}` 
-                    : (studentProfile.name || '학생'),
-                schoolInfo: (studentProfile.grade && studentProfile.class) ? `${studentProfile.grade}학년 ${studentProfile.class}반` : '',
-                grade: studentProfile.grade || '',
-                classNum: studentProfile.class || '',
-                score: 0,
-                isHost: isHost,
-                avatar: myAvatar,
-                hasGuessed: false
-            };
-
-            await updateDoc(roomRef, {
-                [`players.${myUid}`]: myPlayerObj,
-                turnQueue: arrayUnion(myUid)
-            });
-
-            enterLobbyUI(code);
         }
 
         // ════════════════════════════════════════════════════════════════════
@@ -1411,16 +1425,24 @@
         // ════════════════════════════════════════════════════════════════════
         function enterLobbyUI(code) {
             showScreen('screen-lobby');
-            document.getElementById('lobbyRoomCode').innerText = code;
+            const codeEl = document.getElementById('lobbyRoomCode');
+            if (codeEl) codeEl.innerText = code;
 
             const hostBox = document.getElementById('hostSettingsBox');
             const startBtn = document.getElementById('btnStartGame');
-            if (isHost) {
-                hostBox.classList.remove('hidden');
-                startBtn.classList.remove('hidden');
-            } else {
-                hostBox.classList.add('hidden');
-                startBtn.classList.add('hidden');
+            if (hostBox) {
+                if (isHost) {
+                    hostBox.classList.remove('hidden');
+                } else {
+                    hostBox.classList.add('hidden');
+                }
+            }
+            if (startBtn) {
+                if (isHost) {
+                    startBtn.classList.remove('hidden');
+                } else {
+                    startBtn.classList.add('hidden');
+                }
             }
 
             listenToRoom(code);
