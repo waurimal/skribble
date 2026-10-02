@@ -140,11 +140,21 @@
             transform: translateY(-1px);
         }
 
-        /* 캔버스 스타일 */
+        /* 캔버스 스타일 및 터치 스크롤 방지 */
         #paintCanvas {
             background-color: #FFFFFF;
             cursor: crosshair;
             touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+            overscroll-behavior: none;
+        }
+
+        .canvas-container {
+            touch-action: none;
+            overscroll-behavior: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         /* 커스텀 스크롤바 */
@@ -661,68 +671,68 @@
         <!-- ─────────────────────────────────────────── -->
         <!-- 3. 실시간 인게임 화면 (screen-game) -->
         <!-- ─────────────────────────────────────────── -->
-        <div id="screen-game" class="hidden w-full flex flex-col gap-3">
-            <!-- 상단 상태 바 -->
-            <div class="bg-white border border-purple-100 rounded-2xl p-3 shadow-2xs flex flex-wrap items-center justify-between gap-2">
-                <div class="flex items-center gap-3">
-                    <span id="gameRoundBadge" class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-black">
+        <div id="screen-game" class="hidden w-full flex flex-col gap-2 sm:gap-3">
+            <!-- 상단 상태 바 (컴팩트 규격) -->
+            <div class="bg-white border border-purple-100 rounded-2xl p-2 sm:p-2.5 shadow-2xs flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <span id="gameRoundBadge" class="bg-purple-100 text-purple-800 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-black">
                         라운드 1/3
                     </span>
                     <div class="flex items-center gap-1.5 text-xs font-bold text-slate-600">
-                        <span id="drawerAvatarMini" class="w-6 h-6 rounded-full overflow-hidden inline-block border"></span>
+                        <span id="drawerAvatarMini" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full overflow-hidden inline-block border"></span>
                         <span id="drawerNameDisplay">출제자: -</span>
                     </div>
                 </div>
 
                 <!-- 단어 힌트 영역 -->
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5 sm:gap-2">
                     <span class="text-xs text-slate-400 font-bold">제시어:</span>
-                    <span id="wordHintDisplay" class="text-lg md:text-xl font-black text-purple-700 tracking-widest bg-purple-50 px-3 py-1 rounded-xl border border-purple-200">
+                    <span id="wordHintDisplay" class="text-base sm:text-lg md:text-xl font-black text-purple-700 tracking-widest bg-purple-50 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-purple-200">
                         _ _ _
                     </span>
                 </div>
 
                 <!-- 타이머 및 나가기 -->
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-1 font-black text-slate-800 text-sm">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="flex items-center gap-1 font-black text-slate-800 text-xs sm:text-sm">
                         <i class="fa-regular fa-clock text-purple-600"></i>
-                        <span id="gameTimerDisplay" class="w-8 text-right">60</span>초
+                        <span id="gameTimerDisplay" class="w-7 sm:w-8 text-right">60</span>초
                     </div>
-                    <button type="button" onclick="confirmExitGame()" class="text-xs text-slate-400 hover:text-red-500 font-bold px-2 py-1 transition">
+                    <button type="button" onclick="confirmExitGame()" class="text-xs text-slate-400 hover:text-red-500 font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 transition">
                         나가기
                     </button>
                 </div>
             </div>
 
-            <!-- 메인 게임 영역 (캔버스 + 채팅) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
-                <!-- 좌측 캔버스 영역 (8칸) -->
-                <div class="lg:col-span-8 flex flex-col gap-2">
-                    <div class="bg-white border border-purple-200 rounded-2xl p-2 shadow-2xs relative overflow-hidden flex flex-col items-center">
-                        <canvas id="paintCanvas" width="700" height="480" class="w-full max-w-[700px] h-[340px] md:h-[440px] rounded-xl border border-slate-100"></canvas>
+            <!-- 메인 게임 영역 (캔버스 + 채팅: 태블릿/데스크톱 md: 2열 병렬 배치) -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-3 items-stretch">
+                <!-- 좌측 캔버스 영역 (md: 7칸 / lg: 8칸) -->
+                <div class="md:col-span-7 lg:col-span-8 flex flex-col gap-1.5 sm:gap-2">
+                    <div class="canvas-container bg-white border border-purple-200 rounded-2xl p-1.5 sm:p-2 shadow-2xs relative overflow-hidden flex flex-col items-center select-none" style="touch-action: none; -webkit-user-select: none;">
+                        <canvas id="paintCanvas" width="700" height="480" class="w-full max-w-[700px] h-[240px] sm:h-[300px] md:h-[360px] lg:h-[420px] rounded-xl border border-slate-100 touch-none"></canvas>
                         
                         <!-- 관전 중 안내 오버레이 -->
-                        <div id="spectatorOverlay" class="hidden absolute top-4 left-4 bg-black/60 backdrop-blur-xs text-white px-3 py-1.5 rounded-full text-xs font-bold pointer-events-none">
-                            👀 그림을 보고 오른쪽 채팅창에 영단어를 맞춰보세요!
+                        <div id="spectatorOverlay" class="hidden absolute top-3 left-3 bg-black/60 backdrop-blur-xs text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold pointer-events-none">
+                            👀 그림을 보고 채팅창에 정답 영단어를 입력하세요!
                         </div>
                     </div>
 
                     <!-- 출제자 전용 드로잉 툴바 -->
-                    <div id="drawingToolbar" class="bg-white border border-purple-100 rounded-xl p-2 shadow-2xs flex flex-wrap items-center justify-between gap-2">
+                    <div id="drawingToolbar" class="bg-white border border-purple-100 rounded-xl p-1.5 sm:p-2 shadow-2xs flex flex-wrap items-center justify-between gap-1.5 sm:gap-2">
                         <!-- 색상 선택 팔레트 -->
-                        <div class="flex items-center gap-1.5">
-                            <button type="button" onclick="setDrawColor('#000000')" class="w-6 h-6 rounded-full bg-black border border-slate-300"></button>
-                            <button type="button" onclick="setDrawColor('#EF4444')" class="w-6 h-6 rounded-full bg-red-500"></button>
-                            <button type="button" onclick="setDrawColor('#F59E0B')" class="w-6 h-6 rounded-full bg-amber-500"></button>
-                            <button type="button" onclick="setDrawColor('#10B981')" class="w-6 h-6 rounded-full bg-emerald-500"></button>
-                            <button type="button" onclick="setDrawColor('#3B82F6')" class="w-6 h-6 rounded-full bg-blue-500"></button>
-                            <button type="button" onclick="setDrawColor('#8B5CF6')" class="w-6 h-6 rounded-full bg-purple-500"></button>
-                            <button type="button" onclick="setDrawColor('#EC4899')" class="w-6 h-6 rounded-full bg-pink-500"></button>
-                            <button type="button" onclick="setDrawColor('#78350F')" class="w-6 h-6 rounded-full bg-amber-900"></button>
+                        <div class="flex items-center gap-1 sm:gap-1.5">
+                            <button type="button" onclick="setDrawColor('#000000')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-black border border-slate-300"></button>
+                            <button type="button" onclick="setDrawColor('#EF4444')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-500"></button>
+                            <button type="button" onclick="setDrawColor('#F59E0B')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500"></button>
+                            <button type="button" onclick="setDrawColor('#10B981')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-500"></button>
+                            <button type="button" onclick="setDrawColor('#3B82F6')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-500"></button>
+                            <button type="button" onclick="setDrawColor('#8B5CF6')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-purple-500"></button>
+                            <button type="button" onclick="setDrawColor('#EC4899')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-pink-500"></button>
+                            <button type="button" onclick="setDrawColor('#78350F')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-900"></button>
                         </div>
 
                         <!-- 브러시 두께 & 지우개 & 리셋 -->
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-1.5 sm:gap-2">
                             <select id="brushSizeSelect" onchange="setBrushSize(this.value)" class="text-xs p-1 bg-slate-50 border rounded-lg font-bold">
                                 <option value="3">가늘게 (3px)</option>
                                 <option value="6" selected>보통 (6px)</option>
@@ -739,30 +749,30 @@
                     </div>
                 </div>
 
-                <!-- 우측 플레이어 점수 및 실시간 채팅 (4칸) -->
-                <div class="lg:col-span-4 flex flex-col gap-3">
-                    <!-- 인게임 실시간 플레이어 순위 -->
-                    <div class="bg-white border border-purple-100 rounded-2xl p-3 shadow-2xs">
-                        <div class="text-xs font-black text-slate-700 mb-2 flex items-center justify-between">
+                <!-- 우측 플레이어 점수 및 실시간 채팅 (md: 5칸 / lg: 4칸) -->
+                <div class="md:col-span-5 lg:col-span-4 flex flex-col gap-2 sm:gap-2.5">
+                    <!-- 인게임 실시간 플레이어 순위 (세로 높이 절약형) -->
+                    <div class="bg-white border border-purple-100 rounded-2xl p-2 sm:p-2.5 shadow-2xs">
+                        <div class="text-xs font-black text-slate-700 mb-1.5 flex items-center justify-between">
                             <span>실시간 점수표</span>
-                            <span class="text-[10px] text-purple-600 font-bold">정답 스피드 보너스</span>
+                            <span class="text-[10px] text-purple-600 font-bold">스피드 보너스</span>
                         </div>
-                        <div id="gamePlayerScoreList" class="space-y-1.5 max-h-[140px] overflow-y-auto custom-scrollbar">
+                        <div id="gamePlayerScoreList" class="space-y-1 max-h-[85px] sm:max-h-[105px] md:max-h-[125px] overflow-y-auto custom-scrollbar">
                             <!-- 플레이어 점수 카드 동적 생성 -->
                         </div>
                     </div>
 
                     <!-- 실시간 정답 채팅창 -->
-                    <div class="bg-white border border-purple-100 rounded-2xl p-3 shadow-2xs flex-1 flex flex-col min-h-[300px]">
-                        <div class="text-xs font-black text-slate-700 pb-2 border-b border-slate-100 mb-2 flex items-center justify-between">
+                    <div class="bg-white border border-purple-100 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex-1 flex flex-col min-h-[220px] md:min-h-[280px]">
+                        <div class="text-xs font-black text-slate-700 pb-1.5 border-b border-slate-100 mb-2 flex items-center justify-between">
                             <span>실시간 정답 채팅</span>
                             <span class="text-[10px] text-slate-400">대소문자 무관</span>
                         </div>
-                        <div id="chatMessageList" class="flex-1 overflow-y-auto custom-scrollbar space-y-1.5 p-1 bg-slate-50/70 rounded-xl mb-2 text-xs">
+                        <div id="chatMessageList" class="flex-1 overflow-y-auto custom-scrollbar space-y-1.5 p-1 bg-slate-50/70 rounded-xl mb-2 text-xs max-h-[220px] md:max-h-[280px]">
                             <!-- 실시간 채팅 메시지 -->
                         </div>
                         <form id="chatForm" onsubmit="submitChatMessage(event)" class="flex gap-1.5">
-                            <input type="text" id="chatInput" placeholder="정답 영단어를 입력하세요..." autocomplete="off" class="flex-1 p-2 bg-white border border-purple-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-purple-400">
+                            <input type="text" id="chatInput" placeholder="정답 영단어를 입력하세요..." autocomplete="off" autocapitalize="off" spellcheck="false" class="flex-1 p-2 bg-white border border-purple-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-purple-400">
                             <button type="submit" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition">
                                 전송
                             </button>
@@ -1158,6 +1168,8 @@
                 target.classList.remove('hidden');
                 if (screenId === 'screen-home') {
                     target.style.setProperty('display', 'grid', 'important');
+                } else if (screenId === 'screen-game') {
+                    target.style.setProperty('display', 'flex', 'important');
                 } else {
                     target.style.setProperty('display', 'block', 'important');
                 }
@@ -1171,6 +1183,18 @@
                     hdr.style.setProperty('display', 'none', 'important');
                 }
             }
+
+            const mainEl = document.querySelector('main');
+            if (mainEl) {
+                if (screenId === 'screen-game') {
+                    mainEl.classList.remove('py-4', 'md:py-6', 'gap-4');
+                    mainEl.classList.add('py-1', 'sm:py-2', 'gap-2');
+                } else {
+                    mainEl.classList.remove('py-1', 'sm:py-2', 'gap-2');
+                    mainEl.classList.add('py-4', 'md:py-6', 'gap-4');
+                }
+            }
+
             window.scrollTo({ top: 0, behavior: 'instant' });
         };
         const showScreen = window.showScreen;
@@ -1576,6 +1600,9 @@
         }
 
         function onPointerDown(e) {
+            if (e.cancelable && (e.type.startsWith('touch') || e.type.startsWith('pointer'))) {
+                e.preventDefault();
+            }
             if (!roomDataCache || roomDataCache.currentDrawer !== myUid) return;
             isDrawing = true;
             const pos = getCanvasPos(e);
@@ -1592,10 +1619,12 @@
             ctx.lineJoin = 'round';
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
-            if (e.cancelable && e.type.startsWith('touch')) e.preventDefault();
         }
 
         function onPointerMove(e) {
+            if (e.cancelable && (e.type.startsWith('touch') || e.type.startsWith('pointer'))) {
+                e.preventDefault();
+            }
             if (!isDrawing || !roomDataCache || roomDataCache.currentDrawer !== myUid) return;
             const pos = getCanvasPos(e);
 
@@ -1603,10 +1632,12 @@
             ctx.stroke();
 
             currentStroke.points.push(pos);
-            if (e.cancelable && e.type.startsWith('touch')) e.preventDefault();
         }
 
         async function onPointerUp(e) {
+            if (e && e.cancelable && (e.type.startsWith('touch') || e.type.startsWith('pointer'))) {
+                e.preventDefault();
+            }
             if (!isDrawing) return;
             isDrawing = false;
             if (!roomDataCache || roomDataCache.currentDrawer !== myUid) return;
@@ -1634,7 +1665,16 @@
 
         canvas.addEventListener('touchstart', onPointerDown, { passive: false });
         canvas.addEventListener('touchmove', onPointerMove, { passive: false });
-        canvas.addEventListener('touchend', onPointerUp);
+        canvas.addEventListener('touchend', onPointerUp, { passive: false });
+        canvas.addEventListener('touchcancel', onPointerUp, { passive: false });
+
+        // 캔버스 주변 터치 시 화면 스크롤 하강 원천 차단
+        const canvasBox = canvas.closest('.canvas-container');
+        if (canvasBox) {
+            canvasBox.addEventListener('touchmove', (e) => {
+                if (e.cancelable) e.preventDefault();
+            }, { passive: false });
+        }
 
         window.setDrawColor = (c) => { currentColor = c; };
         window.setBrushSize = (s) => { currentSize = parseInt(s, 10); };
@@ -1854,6 +1894,19 @@
                 });
             }
         };
+
+        const chatInputEl = document.getElementById('chatInput');
+        if (chatInputEl) {
+            chatInputEl.addEventListener('focus', () => {
+                // 모바일/태블릿 가상 키보드 팝업 시 화면이 아래로 과도하게 밀리는 현상 방어
+                setTimeout(() => {
+                    const gameScreen = document.getElementById('screen-game');
+                    if (gameScreen && !gameScreen.classList.contains('hidden')) {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                }, 120);
+            });
+        }
 
         // ════════════════════════════════════════════════════════════════════
         // ── 5. 턴 전환 & 라운드 종료 ──
