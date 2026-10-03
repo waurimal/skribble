@@ -720,15 +720,15 @@
                     <!-- 출제자 전용 드로잉 툴바 -->
                     <div id="drawingToolbar" class="bg-white border border-purple-100 rounded-xl p-1.5 sm:p-2 shadow-2xs flex flex-wrap items-center justify-between gap-1.5 sm:gap-2">
                         <!-- 색상 선택 팔레트 -->
-                        <div class="flex items-center gap-1 sm:gap-1.5">
-                            <button type="button" onclick="setDrawColor('#000000')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-black border border-slate-300"></button>
-                            <button type="button" onclick="setDrawColor('#EF4444')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-500"></button>
-                            <button type="button" onclick="setDrawColor('#F59E0B')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500"></button>
-                            <button type="button" onclick="setDrawColor('#10B981')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-500"></button>
-                            <button type="button" onclick="setDrawColor('#3B82F6')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-500"></button>
-                            <button type="button" onclick="setDrawColor('#8B5CF6')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-purple-500"></button>
-                            <button type="button" onclick="setDrawColor('#EC4899')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-pink-500"></button>
-                            <button type="button" onclick="setDrawColor('#78350F')" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-900"></button>
+                        <div class="flex items-center gap-1 sm:gap-1.5" id="colorPalette">
+                            <button type="button" onclick="setDrawColor('#000000')" data-color="#000000" title="검정" class="palette-color-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-black border border-slate-300 ring-2 ring-purple-600 ring-offset-1 transition"></button>
+                            <button type="button" onclick="setDrawColor('#EF4444')" data-color="#EF4444" title="빨강" class="palette-color-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-500 transition"></button>
+                            <button type="button" onclick="setDrawColor('#F59E0B')" data-color="#F59E0B" title="주황" class="palette-color-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500 transition"></button>
+                            <button type="button" onclick="setDrawColor('#10B981')" data-color="#10B981" title="초록" class="palette-color-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-500 transition"></button>
+                            <button type="button" onclick="setDrawColor('#3B82F6')" data-color="#3B82F6" title="파랑" class="palette-color-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-500 transition"></button>
+                            <button type="button" onclick="setDrawColor('#8B5CF6')" data-color="#8B5CF6" title="보라" class="palette-color-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-purple-500 transition"></button>
+                            <button type="button" onclick="setDrawColor('#EC4899')" data-color="#EC4899" title="분홍" class="palette-color-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-pink-500 transition"></button>
+                            <button type="button" onclick="setDrawColor('#78350F')" data-color="#78350F" title="갈색" class="palette-color-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-900 transition"></button>
                         </div>
 
                         <!-- 브러시 두께 & 지우개 & 리셋 -->
@@ -739,10 +739,10 @@
                                 <option value="12">굵게 (12px)</option>
                                 <option value="20">매우 굵게 (20px)</option>
                             </select>
-                            <button type="button" onclick="setEraser()" class="px-2 py-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition">
+                            <button type="button" id="btnEraser" onclick="setEraser()" class="px-2 py-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition">
                                 🧹 지우개
                             </button>
-                            <button type="button" onclick="clearCanvasBroadCast()" class="px-2 py-1 text-xs bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-lg transition">
+                            <button type="button" id="btnClearCanvas" onclick="clearCanvasBroadCast()" class="px-2.5 py-1 text-xs bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-lg transition shadow-2xs active:scale-95">
                                 🗑️ 전체 지우기
                             </button>
                         </div>
@@ -1557,7 +1557,7 @@
         };
 
         window.leaveLobby = async () => {
-            if (currentRoomCode && myUid && roomDataCache) {
+            if (currentRoomCode && currentRoomCode !== 'SOLO' && myUid && roomDataCache) {
                 const roomRef = doc(db, ROOMS_PATH, currentRoomCode);
                 const updatedPlayers = { ...roomDataCache.players };
                 delete updatedPlayers[myUid];
@@ -1568,6 +1568,7 @@
                     try { await updateDoc(roomRef, { players: updatedPlayers }); } catch(e) {}
                 }
             }
+            currentRoomCode = null;
             backToHome();
         };
 
@@ -1640,19 +1641,26 @@
             }
             if (!isDrawing) return;
             isDrawing = false;
-            if (!roomDataCache || roomDataCache.currentDrawer !== myUid) return;
+            if (!roomDataCache) return;
 
             if (currentStroke && currentStroke.points.length > 0) {
                 if (currentStroke.points.length > 80) {
                     currentStroke.points = currentStroke.points.filter((_, i) => i % 2 === 0 || i === currentStroke.points.length - 1);
                 }
-                const roomRef = doc(db, ROOMS_PATH, currentRoomCode);
-                try {
-                    await updateDoc(roomRef, {
-                        strokes: arrayUnion(currentStroke)
-                    });
-                } catch(err) {
-                    console.error("Stroke sync err", err);
+                if (currentRoomCode && currentRoomCode !== 'SOLO') {
+                    const roomRef = doc(db, ROOMS_PATH, currentRoomCode);
+                    try {
+                        await updateDoc(roomRef, {
+                            strokes: arrayUnion(currentStroke)
+                        });
+                    } catch(err) {
+                        console.error("Stroke sync err", err);
+                    }
+                } else {
+                    // SOLO 모드: 로컬 strokes 배열에 안전하게 누적
+                    if (!roomDataCache.strokes) roomDataCache.strokes = [];
+                    roomDataCache.strokes.push(currentStroke);
+                    localStrokesCount = roomDataCache.strokes.length;
                 }
             }
             currentStroke = null;
@@ -1668,6 +1676,14 @@
         canvas.addEventListener('touchend', onPointerUp, { passive: false });
         canvas.addEventListener('touchcancel', onPointerUp, { passive: false });
 
+        const btnClear = document.getElementById('btnClearCanvas');
+        if (btnClear) {
+            btnClear.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.clearCanvasBroadCast();
+            });
+        }
+
         // 캔버스 주변 터치 시 화면 스크롤 하강 원천 차단
         const canvasBox = canvas.closest('.canvas-container');
         if (canvasBox) {
@@ -1676,14 +1692,80 @@
             }, { passive: false });
         }
 
-        window.setDrawColor = (c) => { currentColor = c; };
+        window.setDrawColor = (c) => {
+            currentColor = c;
+            updatePaletteUI(c);
+        };
         window.setBrushSize = (s) => { currentSize = parseInt(s, 10); };
-        window.setEraser = () => { currentColor = '#FFFFFF'; };
+        window.setEraser = () => {
+            currentColor = '#FFFFFF';
+            updatePaletteUI('#FFFFFF');
+        };
+
+        function updatePaletteUI(activeColor) {
+            document.querySelectorAll('.palette-color-btn').forEach(btn => {
+                if (btn.dataset.color === activeColor) {
+                    btn.classList.add('ring-2', 'ring-purple-600', 'ring-offset-1');
+                } else {
+                    btn.classList.remove('ring-2', 'ring-purple-600', 'ring-offset-1');
+                }
+            });
+            const eraserBtn = document.getElementById('btnEraser');
+            if (eraserBtn) {
+                if (activeColor === '#FFFFFF') {
+                    eraserBtn.classList.add('bg-purple-100', 'text-purple-700', 'ring-2', 'ring-purple-400');
+                    eraserBtn.classList.remove('bg-slate-100', 'text-slate-700');
+                } else {
+                    eraserBtn.classList.remove('bg-purple-100', 'text-purple-700', 'ring-2', 'ring-purple-400');
+                    eraserBtn.classList.add('bg-slate-100', 'text-slate-700');
+                }
+            }
+        }
 
         window.clearCanvasBroadCast = async () => {
-            if (!roomDataCache || roomDataCache.currentDrawer !== myUid) return;
-            const roomRef = doc(db, ROOMS_PATH, currentRoomCode);
-            await updateDoc(roomRef, { strokes: [] });
+            // 1. 진행 중인 드로잉 상태 취소
+            isDrawing = false;
+            currentStroke = null;
+
+            // 2. 로컬 캔버스 0ms 즉각 전체 지우기 (지연 없이 즉시 깨끗하게 비움)
+            const c = canvas || document.getElementById('paintCanvas');
+            const cx = ctx || (c && c.getContext('2d'));
+            if (cx && c) {
+                cx.clearRect(0, 0, c.width, c.height);
+            }
+            localStrokesCount = 0;
+            if (roomDataCache) {
+                roomDataCache.strokes = [];
+            }
+
+            // 3. 지우개 상태였다면 기본 검정 브러시로 자동 복귀
+            if (currentColor === '#FFFFFF') {
+                currentColor = '#000000';
+                updatePaletteUI('#000000');
+            }
+
+            // 4. 클릭 효과음 및 알림 토스트 피드백
+            try {
+                if (window.WaurimalAudio) WaurimalAudio.play('click');
+            } catch(e) {}
+            try {
+                if (typeof window.WaurimalToast === 'function') {
+                    WaurimalToast("캔버스를 전체 지웠습니다.", "🗑️");
+                }
+            } catch(e) {}
+
+            // 5. 솔로 연습 모드(SOLO)인 경우 서버 통신 없이 즉시 완료
+            if (!currentRoomCode || currentRoomCode === 'SOLO') {
+                return;
+            }
+
+            // 6. 멀티플레이 방인 경우 Firestore에 브로드캐스트
+            try {
+                const roomRef = doc(db, ROOMS_PATH, currentRoomCode);
+                await updateDoc(roomRef, { strokes: [] });
+            } catch (err) {
+                console.error("clearCanvasBroadCast sync error:", err);
+            }
         };
 
         function renderCanvasStrokes(strokes) {
@@ -2065,6 +2147,19 @@
             syncProfileFromGnb();
             isHost = true;
             currentRoomCode = 'SOLO';
+            if (!myUid) {
+                myUid = 'solo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+            }
+
+            // 캔버스 및 드로잉 상태 깨끗하게 초기화
+            if (ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            localStrokesCount = 0;
+            currentStroke = null;
+            isDrawing = false;
+            currentColor = '#000000';
+            updatePaletteUI('#000000');
 
             const activeList = vocabularyCache[Object.keys(vocabularyCache)[0]] || DEFAULT_VOCAB["기본 주제"];
             const randomWord = activeList[Math.floor(Math.random() * activeList.length)];
