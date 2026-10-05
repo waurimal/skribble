@@ -1047,7 +1047,7 @@
         let unsubscribeTeacherConfig = null;
         let timerInterval = null;
 
-        let adminPassword = '4657'; // 기존 Firestore 실제 비밀번호
+        let adminPassword = '1234'; // 기본 관리자 비밀번호
         let vocabularyCache = { ...DEFAULT_VOCAB };
         let hofAllScores = [];
         let hofCurrentPeriod = 'all'; // 'all' | 'month' | 'week'
@@ -1155,6 +1155,14 @@
         };
 
         window.showScreen = (screenId) => {
+            if (screenId === 'screen-teacher' && (!window.WaurimalAuth || !window.WaurimalAuth.isAuthenticated())) {
+                if (typeof window.openTeacherAuthModal === 'function') {
+                    window.openTeacherAuthModal();
+                } else {
+                    alert('교사 인증이 필요합니다.');
+                }
+                return;
+            }
             const screens = ['screen-home', 'screen-lobby', 'screen-game', 'screen-gameover', 'screen-teacher'];
             screens.forEach(id => {
                 const el = document.getElementById(id);
@@ -1892,17 +1900,21 @@
             const list = document.getElementById('chatMessageList');
             if (!list) return;
 
+            const sanitize = window.WaurimalSanitize || (s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'));
+
             list.innerHTML = messages.map(m => {
+                const safeSender = sanitize(m.sender || '');
+                const safeText = sanitize(m.text || '');
                 if (m.type === 'system') {
-                    return `<div class="text-center text-[10px] text-purple-600 bg-purple-50/80 py-1 px-2 rounded-lg font-bold">${m.text}</div>`;
+                    return `<div class="text-center text-[10px] text-purple-600 bg-purple-50/80 py-1 px-2 rounded-lg font-bold">${safeText}</div>`;
                 }
                 if (m.type === 'correct') {
-                    return `<div class="text-center text-[11px] font-black text-emerald-700 bg-emerald-100/90 py-1.5 px-2 rounded-lg shadow-2xs">🎉 ${m.sender} 님이 정답을 맞혔습니다! (+${m.points}점)</div>`;
+                    return `<div class="text-center text-[11px] font-black text-emerald-700 bg-emerald-100/90 py-1.5 px-2 rounded-lg shadow-2xs">🎉 ${safeSender} 님이 정답을 맞혔습니다! (+${m.points || 0}점)</div>`;
                 }
                 return `
                     <div class="flex items-baseline gap-1.5">
-                        <span class="font-bold text-slate-600 text-[11px]">${m.sender}:</span>
-                        <span class="text-slate-800 text-[11px] font-medium break-all">${m.text}</span>
+                        <span class="font-bold text-slate-600 text-[11px]">${safeSender}:</span>
+                        <span class="text-slate-800 text-[11px] font-medium break-all">${safeText}</span>
                     </div>
                 `;
             }).join('');
@@ -2382,6 +2394,11 @@
         // ── 8. 교사 전용 관리 화면 (단어장 + 성적표 CSV + 학급 삭제) ──
         // ════════════════════════════════════════════════════════════════════
         window.openTeacherAuthModal = () => {
+            if (window.WaurimalAuth && window.WaurimalAuth.isAuthenticated()) {
+                showScreen('screen-teacher');
+                switchTeacherTab('vocab');
+                return;
+            }
             document.getElementById('pwdInput').value = '';
             document.getElementById('modal-pwd').classList.remove('hidden');
         };
@@ -2391,9 +2408,8 @@
 
         window.submitTeacherAuth = () => {
             const input = document.getElementById('pwdInput').value.trim();
-            const waurimalPw = localStorage.getItem('waurimal_admin_pw');
-            // 기존 4657, 기본 1234, 와우리말 wauri1234 및 변경된 통합 비번 모두 허용
-            if (input === adminPassword || input === '4657' || input === 'wauri1234' || input === '1234' || input === '0000' || (waurimalPw && input === waurimalPw)) {
+            const isValid = window.WaurimalAuth ? window.WaurimalAuth.authenticate(input) : (input === (localStorage.getItem('waurimal_admin_pw') || '1234'));
+            if (isValid) {
                 closeTeacherAuthModal();
                 showScreen('screen-teacher');
                 switchTeacherTab('vocab');
@@ -2531,10 +2547,14 @@
                 return;
             }
             try {
+                if (window.WaurimalAuth) {
+                    window.WaurimalAuth.setPw(input);
+                } else {
+                    localStorage.setItem('waurimal_admin_pw', input);
+                }
                 const ref = doc(db, SETTINGS_PATH);
                 await setDoc(ref, { password: input }, { merge: true });
                 adminPassword = input;
-                localStorage.setItem('waurimal_admin_pw', input);
                 document.getElementById('newAdminPwInput').value = '';
                 showAlert("교사 비밀번호가 성공적으로 변경되었습니다.", "변경 완료", "✅");
             } catch(e) {
