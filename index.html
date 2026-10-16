@@ -1047,7 +1047,7 @@
         let unsubscribeTeacherConfig = null;
         let timerInterval = null;
 
-        let adminPassword = '1234'; // 기본 관리자 비밀번호
+        let adminPassword = '4657'; // 기본 관리자 비밀번호
         let vocabularyCache = { ...DEFAULT_VOCAB };
         let hofAllScores = [];
         let hofCurrentPeriod = 'all'; // 'all' | 'month' | 'week'
@@ -2411,7 +2411,7 @@
 
         window.submitTeacherAuth = () => {
             const input = document.getElementById('pwdInput').value.trim();
-            const isValid = window.WaurimalAuth ? window.WaurimalAuth.authenticate(input) : (input === (localStorage.getItem('waurimal_admin_pw') || '1234'));
+            const isValid = window.WaurimalAuth ? window.WaurimalAuth.authenticate(input) : (input === (localStorage.getItem('waurimal_admin_pw') || '4657'));
             if (isValid) {
                 closeTeacherAuthModal();
                 showScreen('screen-teacher');
